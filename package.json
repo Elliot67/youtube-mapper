@@ -1,0 +1,16 @@
+{
+	"name": "youtube-mapper",
+	"version": "1.0.0",
+	"main": "main.js",
+	"author": "Elliot67",
+	"license": "MIT",
+	"scripts": {
+		"start": "electron ./src/main.js"
+	},
+	"devDependencies": {
+		"electron": "^13.1.1"
+	},
+	"dependencies": {
+		"node-fetch": "^2.6.1"
+	}
+}
