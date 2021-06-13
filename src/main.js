@@ -111,7 +111,7 @@ function updateMappingState(mainId, id, idsFound) {
 		}
 	})
 
-	currentState.linkedIds.push(...idsFound)
+	currentState.linkedIds.push(...newIds)
 	mappingState.set(mainId, {
 		...currentState,
 		lastUpdateDate: new Date(),
