@@ -5,10 +5,13 @@
 	"author": "Elliot67",
 	"license": "MIT",
 	"scripts": {
-		"start": "electron ./src/main.js"
+		"start": "electron ./src/main.js --inspect --trace-warnings",
+		"start-front": "parcel watch ./src/front/index.html --out-dir ./src/front/dist --public-url ./ --no-hmr",
+		"build-front": "parcel build ./src/front/index.html --out-dir ./src/front/dist --public-url ./"
 	},
 	"devDependencies": {
-		"electron": "^13.1.1"
+		"electron": "^13.1.1",
+		"parcel-bundler": "^1.12.5"
 	},
 	"dependencies": {
 		"node-fetch": "^2.6.1"
