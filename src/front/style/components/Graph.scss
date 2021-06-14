@@ -1,0 +1,47 @@
+body {
+	overflow: hidden;
+}
+
+.Graph {
+	svg {
+		display: block;
+	}
+
+	text {
+		font-weight: 300;
+	}
+	.node rect {
+		fill: var(--light-background-color);
+		stroke-width: 1.5px;
+	}
+	.edgePath path {
+		stroke: var(--border-color);
+		stroke-width: 1.5px;
+	}
+	.edgePath marker {
+		fill: var(--border-color);
+	}
+
+	.node-container {
+		display: grid;
+		grid-template-columns: 36px 1fr;
+		grid-gap: 5px;
+	}
+
+	.node-image {
+		display: block;
+		width: 160px;
+		height: 90px;
+		grid-column: span 2;
+	}
+
+	.node-channelImage {
+		display: block;
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+	}
+
+	.node-title {
+	}
+}

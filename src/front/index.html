@@ -7,21 +7,30 @@
 		<meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
 		<meta http-equiv="X-Content-Security-Policy" content="script-src 'self'" />
 		<title>Youtube mapper</title>
-		<link rel="stylesheet" href="style.scss" />
+		<link rel="stylesheet" href="style/style.scss" />
 	</head>
 	<body>
-		<h1>I'm the content of the page</h1>
+		<sidebar class="Sidebar">
+			<form class="Search Search-form-JS">
+				<input type="text" placeholder="Video url" class="Search-input Input" />
+				<button class="Button" type="submit">Generate</button>
+			</form>
 
-		<svg id="canvas" width="100vw" height="100vh"></svg>
+			<div class="Card Card-container-JS" data-state="hidden">
+				<div class="Card-preview Card-preview-JS"></div>
+			</div>
+		</sidebar>
+
+		<svg class="Graph" id="canvas" width="100vw" height="100vh"></svg>
 
 		<template id="node">
-			<div class="node-container">
+			<div class="node-container" data-id="">
 				<img class="node-image" src="" alt="" />
 				<img class="node-channelImage" src="" alt="" />
-				<a class="node-title" href=""></a>
+				<p class="node-title"></p>
 			</div>
 		</template>
 
-		<script src="script.js"></script>
+		<script src="script/script.js"></script>
 	</body>
 </html>

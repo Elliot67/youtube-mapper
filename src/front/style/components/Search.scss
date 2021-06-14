@@ -1,0 +1,13 @@
+.Search {
+	margin: var(--spacer);
+	padding: var(--spacer);
+	background-color: var(--light-background-color);
+	border: var(--border);
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-gap: var(--spacer);
+
+	&-input {
+		background-color: var(--medium-background-color);
+	}
+}

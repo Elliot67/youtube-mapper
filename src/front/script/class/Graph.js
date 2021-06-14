@@ -43,7 +43,7 @@ export class Graph {
 
 		this.g.nodes().forEach((v) => {
 			var node = this.g.node(v);
-			node.rx = node.ry = 5;
+			node.rx = node.ry = 4;
 		});
 
 		this.g.setEdge(3, 4);
@@ -95,10 +95,11 @@ export class Graph {
 		const nodeTemplate = document.querySelector("template#node");
 		const template = document.importNode(nodeTemplate.content, true);
 
+		template.querySelector(".node-container").setAttribute('data-id', data.id);
+
+
 		const title = template.querySelector(".node-title");
 		title.textContent = data.title;
-		console.log(data.url);
-		title.setAttribute('href', data.url);
 		const img = template.querySelector(".node-image");
 		img.setAttribute("src", data.imageUrl);
 

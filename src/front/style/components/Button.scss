@@ -1,0 +1,14 @@
+.Button {
+	padding: 0.5em 1em;
+	min-width: 10ch;
+	border: solid var(--primary-color) 1px;
+	border-radius: var(--radius);
+	color: var(--primary-color);
+	cursor: pointer;
+	transition-duration: 0.3s;
+
+	&:hover {
+		background-color: var(--primary-color);
+		color: var(--text-primary-color);
+	}
+}

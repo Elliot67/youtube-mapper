@@ -1,0 +1,17 @@
+.Card {
+	margin: var(--spacer);
+	padding: var(--spacer);
+	background-color: var(--light-background-color);
+	border: var(--border);
+
+	&[data-state="hidden"] {
+		display: none;
+	}
+
+	&[data-state="loading"] {
+		height: 200px;
+	}
+
+	&-preview {
+	}
+}
