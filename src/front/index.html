@@ -4,12 +4,24 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
-		<meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
+		<meta http-equiv="X-Content-Security-Policy" content="script-src 'self'" />
 		<title>Youtube mapper</title>
+		<link rel="stylesheet" href="style.scss" />
 	</head>
 	<body>
 		<h1>I'm the content of the page</h1>
+
+		<svg id="canvas" width="100vw" height="100vh"></svg>
+
+		<template id="node">
+			<div class="node-container">
+				<img class="node-image" src="" alt="" />
+				<img class="node-channelImage" src="" alt="" />
+				<a class="node-title" href=""></a>
+			</div>
+		</template>
+
 		<script src="script.js"></script>
 	</body>
 </html>
