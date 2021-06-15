@@ -1,5 +1,9 @@
 export class Logs {
 
+	private cutLog: boolean;
+	private name: string;
+	private showLog: boolean;
+
 	constructor(name, currentLog = false) {
 		this.cutLog = true;
 
@@ -9,7 +13,7 @@ export class Logs {
 		return this;
 	}
 
-	_show(data, groupTitle) {
+	private show(data, groupTitle) {
 		if (!(this.cutLog && this.showLog)) {
 			return;
 		}
@@ -19,11 +23,11 @@ export class Logs {
 		console.groupEnd();
 	}
 
-	log(data) {
-		this._show(data, [`💡%c ${this.name}`, 'color: #bada55']);
+	public log(data) {
+		this.show(data, [`💡%c ${this.name}`, 'color: #bada55']);
 	}
 
-	error(data) {
-		this._show(data, [`🚨%c ${this.name}`, 'color: red']);
+	public error(data) {
+		this.show(data, [`🚨%c ${this.name}`, 'color: red']);
 	}
 }

@@ -3,7 +3,13 @@ import dagreD3 from "dagre-d3";
 
 export class Graph {
 
-	constructor() {
+	public static g;
+	public static render;
+	public static $svg: SVGElement;
+	public static svg: d3.Selection<SVGElement, any, any, any>;
+	public static svgG: d3.Selection<SVGGElement, any, any, any>;
+
+	public static init() {
 		this.g = new dagreD3.graphlib.Graph()
 			.setGraph({ rankdir: 'LR' })
 			.setDefaultEdgeLabel(function () { return {}; }); // FIXME: Is it needed ?
@@ -14,7 +20,7 @@ export class Graph {
 		this.center();
 	}
 
-	setup() {
+	public static setup() {
 		// TODO: A récupérer depuis main
 		const data = {
 			id: "videoId",
@@ -62,7 +68,6 @@ export class Graph {
 		this.g.setEdge(1, 14);
 		this.g.setEdge(0, 1);
 
-
 		this.svg = d3.select(this.$svg);
 		this.svgG = this.svg.append("g");
 		const zoom = d3.zoom()
@@ -73,7 +78,7 @@ export class Graph {
 		this.svg.call(zoom);
 	}
 
-	center() {
+	public static center() {
 		const scale = 0.5;
 		const xCenterOffset = (this.$svg.getBoundingClientRect().width - this.svgG.node().getBBox().width) / 2;
 		const yCenterOffset = (this.$svg.getBoundingClientRect().height - this.svgG.node().getBBox().height) / 2;
@@ -84,15 +89,15 @@ export class Graph {
 		this.svgG.attr("transform", `translate(${xCenterOffset}, ${yCenterOffset}) scale(${scale}) translate(${xCenterOffset}, ${yCenterOffset})`);
 	}
 
-	getNodeLabel(data) {
+	public static getNodeLabel(data) {
 		return {
 			labelType: "html",
 			label: this.getNodeHtml(data)
 		}
 	}
 
-	getNodeHtml(data) {
-		const nodeTemplate = document.querySelector("template#node");
+	public static getNodeHtml(data) {
+		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node");
 		const template = document.importNode(nodeTemplate.content, true);
 
 		template.querySelector(".node-container").setAttribute('data-id', data.id);

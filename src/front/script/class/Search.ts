@@ -2,15 +2,19 @@ import { Logs } from "./Logs";
 
 export class Search {
 
-	constructor() {
+	public static log: Logs;
+	public static $form: HTMLFormElement;
+	public static $input: HTMLInputElement;
+
+	public static init() {
+		this.log = new Logs('Search', true);
+
 		this.$form = document.querySelector(".Search-form-JS");
 		this.$input = this.$form.querySelector("input");
 		this.events();
-
-		this.log = new Logs('Search', true);
 	}
 
-	events() {
+	public static events() {
 		this.$form.addEventListener('submit', (e) => {
 			e.preventDefault();
 
