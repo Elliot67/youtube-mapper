@@ -3,11 +3,13 @@ import dagreD3 from "dagre-d3";
 
 export class Graph {
 
-	public static g;
+	public static g: dagreD3.graphlib.Graph;
 	public static render;
 	public static $svg: SVGElement;
-	public static svg: d3.Selection<SVGElement, any, any, any>;
-	public static svgG: d3.Selection<SVGGElement, any, any, any>;
+	public static svg: d3.Selection<SVGElement, unknown, null, undefined>;
+	public static svgG: d3.Selection<SVGGElement, unknown, null, undefined>;
+
+	public static nodePredecessors = [];
 
 	public static init() {
 		this.g = new dagreD3.graphlib.Graph()
@@ -15,12 +17,11 @@ export class Graph {
 			.setDefaultEdgeLabel(function () { return {}; }); // FIXME: Is it needed ?
 		this.render = new dagreD3.render();
 		this.$svg = document.querySelector("#canvas");
-		this.setup();
-		this.render(this.svgG, this.g);
+		this.draw();
 		this.center();
 	}
 
-	public static setup() {
+	public static draw() {
 		// TODO: A récupérer depuis main
 		const data = {
 			id: "videoId",
@@ -31,7 +32,7 @@ export class Graph {
 			channelUrl: "https://picsum.photos/36/36",
 			// TODO: Maybe more data later
 		};
-		this.g.setNode(0, this.getNodeLabel(data));
+		this.g.setNode('hehe', this.getNodeLabel(data));
 		this.g.setNode(1, this.getNodeLabel(data));
 		this.g.setNode(2, this.getNodeLabel(data));
 		this.g.setNode(3, this.getNodeLabel(data));
@@ -66,7 +67,7 @@ export class Graph {
 		this.g.setEdge(13, 14);
 		this.g.setEdge(12, 8);
 		this.g.setEdge(1, 14);
-		this.g.setEdge(0, 1);
+		this.g.setEdge('hehe', 1);
 
 		this.svg = d3.select(this.$svg);
 		this.svgG = this.svg.append("g");
@@ -76,13 +77,42 @@ export class Graph {
 				this.svgG.attr("transform", event.transform);
 			});
 		this.svg.call(zoom);
+
+		this.render(this.svgG, this.g);
+
+
+		this.addHighlightPredecessors();
+	}
+
+	public static addHighlightPredecessors() {
+		this.svgG.selectAll("svg .node")
+			.on("mouseenter", (event, nodeName) => {
+				this.nodePredecessors.push(nodeName);
+				this.updateNodePredecessorsRecursively(nodeName);
+				const nodes = d3.selectAll(".node").filter((datum, index) => this.nodePredecessors.includes(datum));
+				nodes.style('stroke', 'var(--primary-color)');
+				this.nodePredecessors = [];
+			})
+			.on("mouseleave", (event, nodeName) => {
+				d3.selectAll(".node").style('stroke', 'none');
+			})
+	}
+
+	public static updateNodePredecessorsRecursively(nodeName) {
+		const predecessors = this.g.predecessors(nodeName);
+		predecessors.forEach((predecessorNodeName) => {
+			if (!this.nodePredecessors.includes(predecessorNodeName)) {
+				this.nodePredecessors.push(predecessorNodeName);
+				this.updateNodePredecessorsRecursively(predecessorNodeName)
+			}
+		})
 	}
 
 	public static center() {
 		const scale = 0.5;
 		const xCenterOffset = (this.$svg.getBoundingClientRect().width - this.svgG.node().getBBox().width) / 2;
 		const yCenterOffset = (this.$svg.getBoundingClientRect().height - this.svgG.node().getBBox().height) / 2;
-		// FIXME: Smthing wrong with larger node
+		// FIXME: Somthing wrong with larger node
 
 		// Applying translate a second time to correct the translation applied by the scale
 		this.svg.call(d3.zoom().transform, d3.zoomIdentity.translate(xCenterOffset, yCenterOffset).scale(scale).translate(xCenterOffset, yCenterOffset));
