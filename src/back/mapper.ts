@@ -1,8 +1,7 @@
-// @ts-nocheck
-const { ipcMain } = require('electron')
-const fetch = require('node-fetch')
-const { isDef } = require('./utils/general')
-const { getLinkedVideosId } = require('./utils/scraper')
+import { ipcMain } from "electron"
+import fetch from "node-fetch";
+import { isDef } from "./utils/general";
+import { getLinkedVideosId } from "./utils/scraper";
 
 
 const mappingState = new Map()
@@ -28,7 +27,7 @@ ipcMain.on('map-url', async (e, mainId) => {
 	try {
 		findLinkedIdsRecursively(mainId, mainId)
 	} catch (error) {
-		errors.push(error)
+		//errors.push(error)
 		// FIXME: 
 	}
 })
@@ -43,7 +42,7 @@ ipcMain.on('stop-mapping', (e, mainId) => {
 })
 
 
-async function getLinkedIds(mainId, id) {
+async function getLinkedIds(mainId: string, id: string) {
 	console.log('searching ids for', id)
 	const config = mappingState.get(mainId)
 	if (!config.authorizedToRun) {
@@ -56,12 +55,12 @@ async function getLinkedIds(mainId, id) {
 		console.log('found ids', linkedVideosIds)
 		return Promise.resolve(linkedVideosIds)
 	} catch (error) {
-		console.log(errror, 'Error when fetching the url')
+		console.log(error, 'Error when fetching the url')
 		return Promise.reject();
 	}
 }
 
-async function findLinkedIdsRecursively(mainId, id) {
+async function findLinkedIdsRecursively(mainId: string, id: string) {
 	const linkedIds = await getLinkedIds(mainId, id)
 	const nextIds = updateMappingState(mainId, id, linkedIds)
 
@@ -70,12 +69,12 @@ async function findLinkedIdsRecursively(mainId, id) {
 	})
 }
 
-function updateMappingState(mainId, id, idsFound) {
+function updateMappingState(mainId: string, id: string, idsFound: string[]) {
 	const currentState = mappingState.get(mainId)
 
 	console.log('linkedIds in state', currentState.linkedIds)
 
-	let newIds = []
+	let newIds: string[] = []
 	idsFound.forEach((idFound) => {
 		if (!currentState.linkedIds.includes(idFound)) {
 			newIds.push(idFound)
@@ -100,6 +99,6 @@ function updateMappingState(mainId, id, idsFound) {
 	return newIds
 }
 
-function getYoutubeUrl(id) {
+function getYoutubeUrl(id: string) {
 	return `https://www.youtube.com/watch?v=${id}`
 }

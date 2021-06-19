@@ -1,9 +1,7 @@
-// @ts-nocheck
-const { contextBridge, ipcRenderer } = require('electron')
+import { contextBridge, ipcRenderer } from "electron"
 
-
-const mapId = (id) => ipcRenderer.send('map-id', id)
-const stopMapping = (id) => ipcRenderer.send('stop-mapping', id)
+const mapId = (id: string) => ipcRenderer.send('map-id', id)
+const stopMapping = (id: string) => ipcRenderer.send('stop-mapping', id)
 
 contextBridge.exposeInMainWorld(
 	'_app',

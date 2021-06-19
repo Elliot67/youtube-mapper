@@ -1,19 +1,12 @@
-// @ts-nocheck
-function isUndefined(data) {
+export function isUndefined(data: any): data is undefined {
 	return typeof data === "undefined";
 }
 
-function isNull(data) {
+export function isNull(data: any): data is null {
 	return data === null;
 }
 
-function isDef(data) {
-	return !isUndefined(data) && !isNull(data) && data !== "";
+export function isDef<T>(data: T | null | undefined | ''): data is T {
+	return !isUndefined(data) && !isNull(data) && data !== '';
 }
 
-
-module.exports = {
-	isUndefined,
-	isNull,
-	isDef,
-};

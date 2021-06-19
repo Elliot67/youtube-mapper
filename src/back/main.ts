@@ -1,7 +1,5 @@
-// @ts-nocheck
-const { app, BrowserWindow } = require('electron')
-const path = require('path')
-
+import { app, BrowserWindow } from "electron";
+import path = require("path");
 
 function createWindow() {
 	const win = new BrowserWindow({
@@ -11,8 +9,8 @@ function createWindow() {
 		}
 	})
 	win.maximize()
-	win.show = true
-	win.openDevTools();
+	win.show();
+	win.webContents.openDevTools();
 	win.loadFile(path.join(__dirname, '../../front/dist/index.html')).catch((error) => console.log(error))
 }
 
