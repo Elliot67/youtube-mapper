@@ -14,7 +14,7 @@ export class Graph {
 	public static init() {
 		this.g = new dagreD3.graphlib.Graph()
 			.setGraph({ rankdir: 'LR' })
-			.setDefaultEdgeLabel(function () { return {}; }); // FIXME: Is it needed ?
+			.setDefaultEdgeLabel(() => ({}));
 		this.render = new dagreD3.render();
 		this.$svg = document.querySelector("#canvas");
 		this.draw();
@@ -109,14 +109,16 @@ export class Graph {
 	}
 
 	public static center() {
+		// Scale
 		const scale = 0.5;
-		const xCenterOffset = (this.$svg.getBoundingClientRect().width - this.svgG.node().getBBox().width) / 2;
-		const yCenterOffset = (this.$svg.getBoundingClientRect().height - this.svgG.node().getBBox().height) / 2;
-		// FIXME: Somthing wrong with larger node
+		this.svg.call(d3.zoom().transform, d3.zoomIdentity.scale(scale));
+		this.svgG.attr("transform", `scale(${scale})`);
 
-		// Applying translate a second time to correct the translation applied by the scale
-		this.svg.call(d3.zoom().transform, d3.zoomIdentity.translate(xCenterOffset, yCenterOffset).scale(scale).translate(xCenterOffset, yCenterOffset));
-		this.svgG.attr("transform", `translate(${xCenterOffset}, ${yCenterOffset}) scale(${scale}) translate(${xCenterOffset}, ${yCenterOffset})`);
+		// Center
+		const xCenterOffset = (this.$svg.getBoundingClientRect().width - this.svgG.node().getBoundingClientRect().width) / 2;
+		const yCenterOffset = (this.$svg.getBoundingClientRect().height - this.svgG.node().getBoundingClientRect().height) / 2;
+		this.svg.call(d3.zoom().transform, d3.zoomIdentity.translate(xCenterOffset, yCenterOffset).scale(scale));
+		this.svgG.attr("transform", `translate(${xCenterOffset}, ${yCenterOffset}) scale(${scale})`);
 	}
 
 	public static getNodeLabel(data) {
