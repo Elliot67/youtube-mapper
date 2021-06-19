@@ -10,6 +10,11 @@ body {
 	text {
 		font-weight: 300;
 	}
+
+	.node {
+		cursor: pointer;
+	}
+
 	.node rect {
 		fill: var(--light-background-color);
 		stroke-width: 1.5px;

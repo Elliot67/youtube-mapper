@@ -10,6 +10,7 @@ export class Graph {
 	public static svgG: d3.Selection<SVGGElement, unknown, null, undefined>;
 
 	public static nodePredecessors = [];
+	public static selectedNode: string | null = null;
 
 	public static init() {
 		this.g = new dagreD3.graphlib.Graph()
@@ -81,21 +82,23 @@ export class Graph {
 		this.render(this.svgG, this.g);
 
 
-		this.addHighlightPredecessors();
+		this.setNodeEvents();
 	}
 
-	public static addHighlightPredecessors() {
-		this.svgG.selectAll("svg .node")
-			.on("mouseenter", (event, nodeName) => {
-				this.nodePredecessors.push(nodeName);
-				this.updateNodePredecessorsRecursively(nodeName);
-				const nodes = d3.selectAll(".node").filter((datum, index) => this.nodePredecessors.includes(datum));
-				nodes.style('stroke', 'var(--primary-color)');
-				this.nodePredecessors = [];
-			})
-			.on("mouseleave", (event, nodeName) => {
-				d3.selectAll(".node").style('stroke', 'none');
-			})
+	public static setNodeEvents() {
+		this.svgG.selectAll("svg .node").on("click", (event, nodeName) => {
+			this.selectNode(nodeName);
+		});
+	}
+
+	public static selectNode(nodeName) {
+		this.clearSelectedNode();
+		this.selectedNode = nodeName;
+		this.nodePredecessors.push(nodeName);
+		this.updateNodePredecessorsRecursively(nodeName);
+		const nodes = d3.selectAll(".node").filter((datum) => this.nodePredecessors.includes(datum));
+		nodes.style('stroke', 'var(--primary-color)');
+		this.nodePredecessors = [];
 	}
 
 	public static updateNodePredecessorsRecursively(nodeName) {
@@ -106,6 +109,11 @@ export class Graph {
 				this.updateNodePredecessorsRecursively(predecessorNodeName)
 			}
 		})
+	}
+
+	public static clearSelectedNode() {
+		this.selectedNode = null;
+		d3.selectAll(".node").style('stroke', 'none');
 	}
 
 	public static center() {

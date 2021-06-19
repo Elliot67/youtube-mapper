@@ -14,7 +14,7 @@ function createWindow() {
 	win.maximize()
 	win.show = true
 	win.openDevTools();
-	win.loadFile('front/dist/index.html').catch((error) => console.log(error))
+	win.loadFile(path.join(__dirname, '../front/dist/index.html')).catch((error) => console.log(error))
 }
 
 app.on('window-all-closed', function () {

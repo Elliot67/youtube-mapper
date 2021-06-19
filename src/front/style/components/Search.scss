@@ -10,4 +10,14 @@
 	&-input {
 		background-color: var(--medium-background-color);
 	}
+
+	&-error {
+		color: var(--primary-color);
+		grid-column: span 2;
+		font-size: 12px;
+
+		&[data-state="hidden"] {
+			display: none;
+		}
+	}
 }
