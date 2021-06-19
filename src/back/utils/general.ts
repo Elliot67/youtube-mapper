@@ -1,3 +1,4 @@
+// @ts-nocheck
 function isUndefined(data) {
 	return typeof data === "undefined";
 }
@@ -11,7 +12,6 @@ function isDef(data) {
 }
 
 
-// FIXME: Unexpected token export
 module.exports = {
 	isUndefined,
 	isNull,

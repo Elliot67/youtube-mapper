@@ -1,5 +1,5 @@
 import { Logs } from "./Logs";
-import { isDef } from "../../../back/utils/general";
+import { isDef } from "../utils/general";
 
 enum STATE {
 	HIDDEN = "hidden",

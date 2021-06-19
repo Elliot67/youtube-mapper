@@ -1,38 +1,9 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
-const path = require('path')
+// @ts-nocheck
+const { ipcMain } = require('electron')
 const fetch = require('node-fetch')
 const { isDef } = require('./utils/general')
+const { getLinkedVideosId } = require('./utils/scraper')
 
-
-function createWindow() {
-	const win = new BrowserWindow({
-		show: false,
-		webPreferences: {
-			preload: path.join(__dirname, 'preload.js')
-		}
-	})
-	win.maximize()
-	win.show = true
-	win.openDevTools();
-	win.loadFile(path.join(__dirname, '../front/dist/index.html')).catch((error) => console.log(error))
-}
-
-app.on('window-all-closed', function () {
-	if (process.platform !== 'darwin') app.quit()
-})
-
-
-app.whenReady().then(() => {
-	createWindow()
-
-	app.on('activate', function () {
-		if (BrowserWindow.getAllWindows().length === 0) createWindow()
-	})
-})
-
-//
-// Start real work
-//
 
 const mappingState = new Map()
 
@@ -58,6 +29,7 @@ ipcMain.on('map-url', async (e, mainId) => {
 		findLinkedIdsRecursively(mainId, mainId)
 	} catch (error) {
 		errors.push(error)
+		// FIXME: 
 	}
 })
 
@@ -80,8 +52,7 @@ async function getLinkedIds(mainId, id) {
 
 	try {
 		const page = await fetch(getYoutubeUrl(id)).then((response) => response.text());
-		const regex = new RegExp(/"image":{"thumbnails":\[{"url":"https:\/\/i\.ytimg\.com\/vi\/([A-Za-z0-9_\-]{11})\/hqdefault\.jpg\?sqp=/g)
-		const linkedVideosIds = [...page.matchAll(regex)].map((captures) => captures[1])
+		const linkedVideosIds = getLinkedVideosId(page)
 		console.log('found ids', linkedVideosIds)
 		return Promise.resolve(linkedVideosIds)
 	} catch (error) {
