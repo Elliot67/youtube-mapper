@@ -5,6 +5,7 @@ import { Search } from "./class/Search";
 interface _App {
 	mapId(id: string): object,
 	stopMapping(id: string): object,
+	on(channel: string, func: (event: any, ...args: any[]) => void): any;
 }
 
 declare global {
