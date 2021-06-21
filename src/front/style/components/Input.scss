@@ -3,4 +3,9 @@
 	border-radius: var(--radius);
 	padding: 0.5em 0.8em;
 	min-width: 0;
+
+	&:disabled {
+		// TODO: Need a better design
+		color: var(--secondary-color);
+	}
 }

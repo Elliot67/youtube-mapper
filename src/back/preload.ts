@@ -1,13 +1,10 @@
 import { contextBridge, ipcRenderer } from "electron"
+import { _App } from "../sharedTypes";
 
-const mapId = (id: string) => ipcRenderer.send('map-id', id);
-const stopMapping = (id: string) => ipcRenderer.send('stop-mapping', id);
-const on = (channel: string, func: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => ipcRenderer.on(channel, func);
-
-const endpoints = {
-	mapId,
-	stopMapping,
-	on,
+const endpoints: _App = {
+	mapVideo: (id) => ipcRenderer.send('map-video', id),
+	stopMapping: (id) => ipcRenderer.send('stop-mapping', id),
+	on: (channel, func) => ipcRenderer.on(channel, func),
 }
 
 contextBridge.exposeInMainWorld('_app', endpoints);

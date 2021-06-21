@@ -11,4 +11,11 @@
 		background-color: var(--primary-color);
 		color: var(--text-primary-color);
 	}
+
+	&:disabled {
+		// TODO: Need a better design
+		opacity: 0.5;
+		background-color: var(--primary-color);
+		color: var(--text-primary-color);
+	}
 }

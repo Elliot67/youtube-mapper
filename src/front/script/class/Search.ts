@@ -11,6 +11,7 @@ export class Search {
 	public static log: Logs;
 	public static $form: HTMLFormElement;
 	public static $input: HTMLInputElement;
+	public static $button: HTMLButtonElement;
 	public static $error: HTMLInputElement;
 
 	public static init() {
@@ -18,6 +19,7 @@ export class Search {
 
 		this.$form = document.querySelector(".JS-Search-form");
 		this.$input = this.$form.querySelector("input");
+		this.$button = this.$form.querySelector('.JS-Search-button')
 		this.$error = this.$form.querySelector(".JS-Search-error");
 		this.events();
 	}
@@ -27,37 +29,17 @@ export class Search {
 			e.preventDefault();
 			this.clearError();
 
-			const searchInput = this.$input.value;
-			const videoIdRegex = new RegExp(/^[A-Za-z0-9_\-]{11}$/);
-
-			let id = "";
-			if (searchInput.match(videoIdRegex)) {
-				id = searchInput;
-			} else {
-				try {
-					const url = new URL(searchInput);
-					id = url.searchParams.get('v');
-				} catch (error) {
-					this.log.error(['Error while converting input to URL', error]);
-				}
-			}
-			this.log.log(['id', id]);
-			this.$input.value = "";
-
-			if (!isDef(id)) {
-				this.showError('Could not find the id');
+			const query = this.$input.value;
+			if (!isDef(query)) {
+				this.showError('The URL or ID is required');
 				return;
 			}
 
+			this.$button.disabled = true;
+			this.$input.disabled = true;
 
-			try {
-				// TODO: Trigger _APP function
-
-
-			} catch (error) {
-				this.showError('Error when searching the video');
-				this.log.error([error]);
-			}
+			this.log.log(['Searching video with', query]);
+			window._app.mapVideo(query);
 		});
 	}
 
@@ -68,5 +50,11 @@ export class Search {
 
 	public static clearError() {
 		this.$error.dataset.state = STATE.HIDDEN;
+	}
+
+	public static unblockSearch() {
+		this.$input.value = "";
+		this.$button.disabled = false;
+		this.$input.disabled = false;
 	}
 }
