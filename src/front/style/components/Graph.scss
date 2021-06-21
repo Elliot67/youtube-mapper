@@ -31,6 +31,9 @@ body {
 		display: grid;
 		grid-template-columns: 36px 1fr;
 		grid-gap: 5px;
+		width: 200px;
+		height: 130px;
+		// FIXME: Wrong size when zooming
 	}
 
 	.node-image {

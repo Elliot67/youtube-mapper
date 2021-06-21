@@ -1,8 +1,15 @@
 import { ipcMain } from "electron"
 import { Scraper } from "./Scraper";
 import * as ytdl from "ytdl-core";
-import { Mapping, MappingVideo } from "../../sharedTypes";
+import { Mapping, MappingVideo, PartialMappingVideo } from "../../sharedTypes";
 import { isDef } from "../utils/general";
+
+
+enum MappingVideoState {
+	DONE = 'done',
+	LOADING = 'loading',
+	WAITING = 'waiting',
+}
 
 export class Mapper {
 
@@ -53,7 +60,9 @@ export class Mapper {
 
 		try {
 			console.log(`searching video : ${id}`);
-			const nextIds = await Mapper.getNewLinkedIds(mainId, id);
+			const videoMapping = await Mapper.getVideoMapping(mainId, id);
+			const nextIds = Mapper.getNextIds(videoMapping.linkedIds);
+			Mapper.updateMapping(videoMapping, nextIds);
 
 			if (Mapper.shouldStopMapping(mainId)) {
 				return;
@@ -70,7 +79,7 @@ export class Mapper {
 		}
 	}
 
-	public static async getNewLinkedIds(mainId: string, id: string): Promise<string[]> {
+	public static async getVideoMapping(mainId: string, id: string): Promise<MappingVideo> {
 		try {
 			const response = await ytdl.getBasicInfo(Scraper.getYoutubeUrl(id));
 			Mapper.responseEvent.reply('log', response); // FIXME: For debug only
@@ -78,18 +87,15 @@ export class Mapper {
 				return;
 			}
 
-			const videoMapping = Mapper.createCurrentVideoMapping(response);
-			const newIds = Mapper.getNextIds(videoMapping.linkedIds);
-			Mapper.updateMapping(videoMapping, newIds);
-
-			return Promise.resolve(newIds);
+			const videoMapping = Mapper.createVideoMapping(response);
+			return Promise.resolve(videoMapping);
 		} catch (error) {
 			console.log(error, 'Error while finding ids');
 			return Promise.reject();
 		}
 	}
 
-	public static createCurrentVideoMapping(r: ytdl.videoInfo): MappingVideo {
+	public static createVideoMapping(r: ytdl.videoInfo): MappingVideo {
 		// @ts-ignore
 		const linkedIdsElements: [] = r.player_response?.endscreen?.endscreenRenderer?.elements ?? [];
 		const linkedIds: string[] = linkedIdsElements.reduce((acc: string[], el: any) => {
@@ -101,6 +107,7 @@ export class Mapper {
 		}, []);
 
 		return {
+			state: MappingVideoState.DONE,
 			id: r.videoDetails.videoId,
 			linkedIds: linkedIds,
 			author: {
@@ -108,20 +115,27 @@ export class Mapper {
 				name: r.videoDetails.author.name,
 				verified: r.videoDetails.author.verified,
 				channelUrl: r.videoDetails.author.channel_url,
-				thumbnailUrl: r.videoDetails.author?.thumbnails[2]?.url ?? '',
+				thumbnailUrl: r.videoDetails.author?.thumbnails?.[2]?.url ?? '',
 			},
 			title: r.videoDetails.title,
 			uploadDate: new Date(r.videoDetails.uploadDate),
 			videoUrl: r.videoDetails.video_url,
-			viewCountr: r.videoDetails.viewCount,
+			viewCounter: r.videoDetails.viewCount,
 			lengthSeconds: r.videoDetails.lengthSeconds,
+			thumbnailUrl: r.videoDetails.thumbnails?.[0].url ?? '', // TODO: Take the good thumbnail
 		};
 	}
 
 	public static updateMapping(videoMapping: MappingVideo, newIds: string[]): void {
 		Mapper.mapping.linkedIds.push(...newIds);
+		const newVideoMappings = newIds.map((id): PartialMappingVideo => {
+			return {
+				state: MappingVideoState.LOADING,
+				id: id,
+			};
+		});
+		Mapper.mapping.data.push(videoMapping, ...newVideoMappings);
 		Mapper.mapping.lastUpdateDate = new Date();
-		Mapper.mapping.data.push(videoMapping);
 
 		Mapper.responseEvent.reply('map-video', Mapper.mapping);
 	}

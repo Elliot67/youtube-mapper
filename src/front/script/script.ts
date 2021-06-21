@@ -18,6 +18,7 @@ Card.init();
 
 window._app.on('map-video', (e, data: Mapping) => {
 	log.log(['Got response from map-video', data]);
+	Graph.mapIt(data);
 
 	if (data.error.isError) {
 		Search.showError(data.error.publicResponse);
@@ -27,5 +28,5 @@ window._app.on('map-video', (e, data: Mapping) => {
 
 // FIXME: Temporary for debugging
 window._app.on('log', (e, ...args: any) => {
-	console.log(...args);
+	console.log('COMING FROM THE BACK', ...args);
 });

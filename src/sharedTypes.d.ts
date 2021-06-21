@@ -2,7 +2,7 @@ export interface Mapping {
 	authorizedToRun: boolean;
 	mainId: string | null;
 	linkedIds: string[];
-	data: MappingVideo[];
+	data: MappingVideos;
 	startDate: Date | null;
 	lastUpdateDate: Date | null;
 	error: MappingError;
@@ -14,16 +14,25 @@ export interface MappingError {
 	debug: any[];
 }
 
-export interface MappingVideo {
+export type MappingVideos = Array<MappingVideo | PartialMappingVideo>;
+
+export interface PartialMappingVideo {
+	state: MappVideoState;
 	id: string;
+}
+
+export interface MappingVideo extends PartialMappingVideo {
 	linkedIds: string[];
 	author: MappingVideoAuthor;
 	title: string;
 	uploadDate: Date;
 	videoUrl: string;
-	viewCountr: string;
+	viewCounter: string;
 	lengthSeconds: string;
+	thumbnailUrl: string;
 }
+
+type MappingVideoState = 'done' | 'loading' | 'waiting';
 
 export interface MappingVideoAuthor {
 	id: string;
