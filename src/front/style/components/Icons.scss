@@ -1,0 +1,21 @@
+#svg {
+	&-loader {
+	}
+}
+
+.svg {
+	&-rotate {
+		animation-name: rotate;
+		animation-duration: 0.8s;
+		animation-timing-function: linear;
+		animation-iteration-count: infinite;
+		@keyframes rotate {
+			0% {
+				transform: rotate(0);
+			}
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+	}
+}

@@ -28,28 +28,70 @@ body {
 	}
 
 	.node-container {
+		width: 280px;
+		min-height: 213px;
+	}
+
+	.node-done {
 		display: grid;
 		grid-template-columns: 36px 1fr;
-		grid-gap: 5px;
-		width: 200px;
-		height: 130px;
-		// FIXME: Wrong size when zooming
+		grid-gap: 12px;
+
+		.node-image {
+			display: block;
+			width: 100%;
+			height: 158px;
+			object-fit: cover;
+			grid-column: span 2;
+		}
+
+		.node-channelImage {
+			display: block;
+			width: 36px;
+			height: 36px;
+			border-radius: 50%;
+		}
+
+		.node-title {
+			overflow: hidden;
+			white-space: normal;
+			text-overflow: ellipsis;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+		}
 	}
 
-	.node-image {
-		display: block;
-		width: 160px;
-		height: 90px;
-		grid-column: span 2;
+	.node-loading {
+		display: flex;
+
+		.node-loader {
+			margin: auto;
+			height: 40px;
+			width: 40px;
+		}
 	}
 
-	.node-channelImage {
-		display: block;
-		width: 36px;
-		height: 36px;
-		border-radius: 50%;
-	}
+	.node-waiting {
+		display: flex;
 
-	.node-title {
+		.node-search {
+			margin: auto;
+			height: 60px;
+			width: 60px;
+			display: flex;
+			border-radius: 50%;
+			transition-duration: 0.3s;
+
+			&:hover {
+				background-color: var(--border-color);
+			}
+		}
+
+		.node-searchIcon {
+			margin: auto;
+			height: 40px;
+			width: 40px;
+		}
 	}
 }

@@ -87,6 +87,7 @@ export class Mapper {
 				return;
 			}
 
+			// FIXME: The video is already present in the mapping with loading state, we need to take it from here
 			const videoMapping = Mapper.createVideoMapping(response);
 			return Promise.resolve(videoMapping);
 		} catch (error) {

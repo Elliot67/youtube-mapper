@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import dagreD3 from "dagre-d3";
 import { Mapping, MappingVideo, MappingVideos, PartialMappingVideo } from "../../../sharedTypes";
+import { isNull } from "../utils/general";
 
 enum MappingVideoState {
 	DONE = 'done',
@@ -16,6 +17,8 @@ export class Graph {
 	public static svg: d3.Selection<SVGElement, unknown, null, undefined>;
 	public static svgG: d3.Selection<SVGGElement, unknown, null, undefined>;
 
+	public static mapping: Mapping | null = null;
+
 	public static nodePredecessors = [];
 	public static selectedNode: string | null = null;
 
@@ -27,18 +30,23 @@ export class Graph {
 		this.$svg = document.querySelector("#canvas");
 		this.svg = d3.select(this.$svg);
 		this.svgG = this.svg.append("g");
+
 		const zoom = d3.zoom()
-			.scaleExtent([0.25, 2])
+			.scaleExtent([0.125, 2])
 			.on("zoom", (event) => {
 				this.svgG.attr("transform", event.transform);
 			});
 		// @ts-ignore
 		this.svg.call(zoom);
+		this.transform(1, 1, 0.25);
 	}
 
 	public static mapIt(mapping: Mapping) {
 		this.draw(mapping.data);
-		//this.center(); // TODO: Only when new video
+		if (isNull(this.mapping)) {
+			this.center();
+		}
+		this.mapping = mapping;
 	}
 
 	public static draw(videos: MappingVideos) {
@@ -58,7 +66,12 @@ export class Graph {
 			}
 		});
 
+
+		// Reset zoom
+		const currentTransform = d3.zoomTransform(this.svgG.node());
+		this.transform(currentTransform.x, currentTransform.y, 1);
 		this.render(this.svgG, this.g);
+		this.transform(currentTransform.x, currentTransform.y, currentTransform.k);
 		this.setNodeEvents();
 	}
 
@@ -94,18 +107,16 @@ export class Graph {
 	}
 
 	public static center() {
-		// Scale
-		const scale = 0.5;
-		// @ts-ignore
-		this.svg.call(d3.zoom().transform, d3.zoomIdentity.scale(scale));
-		this.svgG.attr("transform", `scale(${scale})`);
-
-		// Center
+		const currentTransform = d3.zoomTransform(this.svgG.node());
 		const xCenterOffset = (this.$svg.getBoundingClientRect().width - this.svgG.node().getBoundingClientRect().width) / 2;
 		const yCenterOffset = (this.$svg.getBoundingClientRect().height - this.svgG.node().getBoundingClientRect().height) / 2;
+		this.transform(xCenterOffset, yCenterOffset, currentTransform.k);
+	}
+
+	public static transform(translateX: number, transalteY: number, scale: number): void {
 		// @ts-ignore
-		this.svg.call(d3.zoom().transform, d3.zoomIdentity.translate(xCenterOffset, yCenterOffset).scale(scale));
-		this.svgG.attr("transform", `translate(${xCenterOffset}, ${yCenterOffset}) scale(${scale})`);
+		this.svg.call(d3.zoom().transform, d3.zoomIdentity.translate(translateX, transalteY).scale(scale));
+		this.svgG.attr("transform", `translate(${translateX}, ${transalteY}) scale(${scale})`);
 	}
 
 	public static getNodeLabel(video: MappingVideo | PartialMappingVideo) {
@@ -120,7 +131,7 @@ export class Graph {
 	}
 
 	public static getNodeHtmlDone(video: MappingVideo): DocumentFragment {
-		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node");
+		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node-done");
 		const template = document.importNode(nodeTemplate.content, true);
 
 		template.querySelector(".node-container").setAttribute('data-id', video.id);
@@ -139,7 +150,7 @@ export class Graph {
 
 	public static getNodeHtmlLoading(video: PartialMappingVideo): DocumentFragment {
 		// TODO: Create node for loading partial videos
-		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node");
+		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node-loading");
 		const template = document.importNode(nodeTemplate.content, true);
 
 		return template;
@@ -147,7 +158,7 @@ export class Graph {
 
 	public static getNodeHtmlWaiting(video: PartialMappingVideo): DocumentFragment {
 		// TODO: Create node for waiting partial videos
-		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node");
+		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node-waiting");
 		const template = document.importNode(nodeTemplate.content, true);
 
 		return template;

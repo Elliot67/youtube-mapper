@@ -1,5 +1,5 @@
 .Sidebar {
 	background-color: var(--medium-background-color);
-	width: 400px;
+	width: min(350px, 40vw);
 	height: 100%;
 }

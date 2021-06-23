@@ -30,3 +30,10 @@ window._app.on('map-video', (e, data: Mapping) => {
 window._app.on('log', (e, ...args: any) => {
 	console.log('COMING FROM THE BACK', ...args);
 });
+
+
+/*
+// FIXME: Temporary for debugging
+import data from "../../../data/test-incomplete-graph";
+Graph.mapIt(data);
+*/
