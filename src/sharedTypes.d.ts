@@ -1,7 +1,6 @@
 export interface Mapping {
 	authorizedToRun: boolean;
 	mainId: string | null;
-	linkedIds: string[];
 	data: MappingVideos;
 	startDate: Date | null;
 	lastUpdateDate: Date | null;
@@ -14,7 +13,7 @@ export interface MappingError {
 	debug: any[];
 }
 
-export type MappingVideos = Array<MappingVideo | PartialMappingVideo>;
+export type MappingVideos = Map<string, MappingVideo | PartialMappingVideo>;
 
 export interface PartialMappingVideo {
 	state: MappVideoState;

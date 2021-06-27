@@ -149,7 +149,6 @@ export class Graph {
 	}
 
 	public static getNodeHtmlLoading(video: PartialMappingVideo): DocumentFragment {
-		// TODO: Create node for loading partial videos
 		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node-loading");
 		const template = document.importNode(nodeTemplate.content, true);
 
@@ -157,8 +156,7 @@ export class Graph {
 	}
 
 	public static getNodeHtmlWaiting(video: PartialMappingVideo): DocumentFragment {
-		// TODO: Create node for waiting partial videos
-		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node-waiting");
+		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node-waiting"); // TODO: Change Icon
 		const template = document.importNode(nodeTemplate.content, true);
 
 		return template;

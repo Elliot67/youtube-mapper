@@ -23,7 +23,8 @@ export class Mapper {
 
 	public static events() {
 
-		ipcMain.on('map-video', async (e, query) => {
+		ipcMain.on('map-video', async (e, query: string) => {
+			Mapper.resetMapping();
 			Mapper.responseEvent = e;
 
 			let mainId: string;
@@ -39,18 +40,48 @@ export class Mapper {
 
 			Mapper.mapping.authorizedToRun = true;
 			Mapper.mapping.mainId = mainId;
-			Mapper.mapping.linkedIds.push(mainId);
 			Mapper.mapping.startDate = new Date();
 			Mapper.mapping.lastUpdateDate = new Date();
 
 			Mapper.findLinkedIdsRecursively(mainId, mainId);
 		});
 
+		// TODO: Experimental, need to think how to build somthing robust
+		ipcMain.on('stop-branch', async (e, videoId: string) => {
+			if (!Mapper.mapping.data.has(videoId)) {
+				Mapper.mapping.error.isError = true;
+				Mapper.mapping.error.publicResponse = 'The video ID was not found';
+				Mapper.mapping.error.debug.push('Can\'t stop branch of not found video');
+				return;
+			}
 
-		ipcMain.on('stop-mapping', (e) => {
-			Mapper.resetMapping();
+			const video = Mapper.mapping.data.get(videoId)
+
+			// TODO: Remove all linkedIds of the videos recursively
+
+
+			/* TODO: ADD before every update
+			// Check if it has not been deleted
+			if (!Mapper.mapping.data.has(id)) {
+	
+			}
+			*/
+
+			Mapper.mapping.lastUpdateDate = new Date();
 		});
 
+
+		ipcMain.on('stop-mapping', (e) => {
+			Mapper.mapping.authorizedToRun = false;
+			Mapper.responseEvent = null;
+		});
+
+	}
+
+	public static sendUpdate(): void {
+		if (isDef(Mapper.responseEvent)) {
+			Mapper.responseEvent.reply('map-video', Mapper.mapping);
+		}
 	}
 
 	public static async findLinkedIdsRecursively(mainId: string, id: string) {
@@ -60,18 +91,24 @@ export class Mapper {
 
 		try {
 			console.log(`searching video : ${id}`);
-			const videoMapping = await Mapper.getVideoMapping(mainId, id);
-			const nextIds = Mapper.getNextIds(videoMapping.linkedIds);
-			Mapper.updateMapping(videoMapping, nextIds);
+			const response = await Mapper.searchData(id);
+			Mapper.updateVideoMapping(id, response);
+			const nextIds = Mapper.getNextIds(id);
 
+			Mapper.sendUpdate()
 			if (Mapper.shouldStopMapping(mainId)) {
 				return;
 			}
 
 			nextIds.forEach((id) => {
-				console.log('should go for', id);
+				console.log('going for new video : ', id);
 				Mapper.findLinkedIdsRecursively(mainId, id);
+				const video = Mapper.mapping.data.get(id);
+				video.state = MappingVideoState.LOADING;
+				Mapper.mapping.data.set(id, video);
 			});
+			Mapper.sendUpdate();
+
 		} catch (error) {
 			Mapper.mapping.error.isError = true;
 			Mapper.mapping.error.debug.push(error);
@@ -79,24 +116,18 @@ export class Mapper {
 		}
 	}
 
-	public static async getVideoMapping(mainId: string, id: string): Promise<MappingVideo> {
+	public static async searchData(id: string): Promise<ytdl.videoInfo> {
 		try {
 			const response = await ytdl.getBasicInfo(Scraper.getYoutubeUrl(id));
-			Mapper.responseEvent.reply('log', response); // FIXME: For debug only
-			if (Mapper.shouldStopMapping(mainId)) {
-				return;
-			}
-
-			// FIXME: The video is already present in the mapping with loading state, we need to take it from here
-			const videoMapping = Mapper.createVideoMapping(response);
-			return Promise.resolve(videoMapping);
+			Mapper.responseEvent.reply('log', response);
+			return Promise.resolve(response);
 		} catch (error) {
-			console.log(error, 'Error while finding ids');
+			console.log(error, 'Error while finding the video : ', id);
 			return Promise.reject();
 		}
 	}
 
-	public static createVideoMapping(r: ytdl.videoInfo): MappingVideo {
+	public static updateVideoMapping(id: string, r: ytdl.videoInfo): void {
 		// @ts-ignore
 		const linkedIdsElements: [] = r.player_response?.endscreen?.endscreenRenderer?.elements ?? [];
 		const linkedIds: string[] = linkedIdsElements.reduce((acc: string[], el: any) => {
@@ -107,7 +138,7 @@ export class Mapper {
 			return [...acc, videoId];
 		}, []);
 
-		return {
+		const video: MappingVideo = {
 			state: MappingVideoState.DONE,
 			id: r.videoDetails.videoId,
 			linkedIds: linkedIds,
@@ -116,36 +147,36 @@ export class Mapper {
 				name: r.videoDetails.author.name,
 				verified: r.videoDetails.author.verified,
 				channelUrl: r.videoDetails.author.channel_url,
-				thumbnailUrl: r.videoDetails.author?.thumbnails?.[2]?.url ?? '',
+				thumbnailUrl: r.videoDetails.author?.thumbnails?.[0]?.url ?? '', // TODO: Improve thumbnails picking method
 			},
 			title: r.videoDetails.title,
 			uploadDate: new Date(r.videoDetails.uploadDate),
 			videoUrl: r.videoDetails.video_url,
 			viewCounter: r.videoDetails.viewCount,
 			lengthSeconds: r.videoDetails.lengthSeconds,
-			thumbnailUrl: r.videoDetails.thumbnails?.[0].url ?? '', // TODO: Take the good thumbnail
+			thumbnailUrl: r.videoDetails.thumbnails?.[0].url ?? '', // TODO: Improve thumbnails picking method
 		};
-	}
 
-	public static updateMapping(videoMapping: MappingVideo, newIds: string[]): void {
-		Mapper.mapping.linkedIds.push(...newIds);
-		const newVideoMappings = newIds.map((id): PartialMappingVideo => {
-			return {
-				state: MappingVideoState.LOADING,
-				id: id,
-			};
+		Mapper.mapping.data.set(id, video);
+		video.linkedIds.forEach((linkedId) => {
+			if (!Mapper.mapping.data.has(linkedId)) {
+				const newVideo = {
+					state: MappingVideoState.WAITING,
+					id: linkedId,
+				};
+				Mapper.mapping.data.set(linkedId, newVideo);
+			}
 		});
-		Mapper.mapping.data.push(videoMapping, ...newVideoMappings);
 		Mapper.mapping.lastUpdateDate = new Date();
-
-		Mapper.responseEvent.reply('map-video', Mapper.mapping);
 	}
 
-	public static getNextIds(idsFound: string[]) {
+	public static getNextIds(id: string): string[] {
+		const video = Mapper.mapping.data.get(id) as MappingVideo;
 		const newIds: string[] = [];
-		idsFound.forEach((idFound) => {
-			if (!Mapper.mapping.linkedIds.includes(idFound)) {
-				newIds.push(idFound);
+		video.linkedIds.forEach((linkedId) => {
+			const linkedVideo = Mapper.mapping.data.get(linkedId);
+			if (Mapper.isVideoMappingWaiting(linkedVideo)) {
+				newIds.push(linkedId);
 			}
 		});
 		return newIds;
@@ -155,8 +186,7 @@ export class Mapper {
 		Mapper.mapping = {
 			authorizedToRun: false,
 			mainId: null,
-			linkedIds: [],
-			data: [],
+			data: new Map(),
 			startDate: null,
 			lastUpdateDate: null,
 			error: {
@@ -173,5 +203,17 @@ export class Mapper {
 			console.log('stopping the search');
 		}
 		return shouldStop;
+	}
+
+	public static isVideoMappingDone(video: MappingVideo | PartialMappingVideo): video is MappingVideo {
+		return video.state === MappingVideoState.DONE;
+	}
+
+	public static isVideoMappingLoading(video: MappingVideo | PartialMappingVideo): video is PartialMappingVideo {
+		return video.state === MappingVideoState.LOADING;
+	}
+
+	public static isVideoMappingWaiting(video: MappingVideo | PartialMappingVideo): video is PartialMappingVideo {
+		return video.state === MappingVideoState.WAITING;
 	}
 }
