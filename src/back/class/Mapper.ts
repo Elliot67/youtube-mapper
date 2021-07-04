@@ -57,10 +57,10 @@ export class Mapper {
 
 			const video = Mapper.mapping.data.get(videoId)
 
-			// TODO: Remove all linkedIds of the videos recursively
+			// Remove all linkedIds of the videos recursively
 
 
-			/* TODO: ADD before every update
+			/* ADD before every update
 			// Check if it has not been deleted
 			if (!Mapper.mapping.data.has(id)) {
 	

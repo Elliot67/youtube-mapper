@@ -18,7 +18,7 @@ Card.init();
 
 window._app.on('map-video', (e, data: Mapping) => {
 	log.log(['Got response from map-video', data]);
-	Graph.mapIt(data);
+	Graph.mapIt(data); // TODO: Verify mainId are corresponding
 	Card.globalUpdate(data);
 
 	if (data.error.isError) {

@@ -1,6 +1,7 @@
 import { Mapping, MappingVideo, MappingVideoState, PartialMappingVideo } from "../../../sharedTypes";
 import { Graph } from "./Graph";
 import { formatTime, isDef } from "../utils/general";
+import { isVideoMappingDone, isVideoMappingLoading } from "../utils/specific";
 
 type CardStateType = 'hidden' | MappingVideoState;
 
@@ -43,9 +44,9 @@ export class Card {
 			return;
 		}
 
-		const html = Graph.isVideoMappingDone(video) ?
+		const html = isVideoMappingDone(video) ?
 			this.getCardHtmlDone(video) :
-			Graph.isVideoMappingLoading(video) ? this.getCardHtmlLoading(video) : this.getCardHtmlWaiting(video);
+			isVideoMappingLoading(video) ? this.getCardHtmlLoading(video) : this.getCardHtmlWaiting(video);
 
 		// @ts-ignore
 		this.$card.replaceChildren(html);

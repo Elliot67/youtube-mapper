@@ -1,14 +1,9 @@
 import * as d3 from "d3";
 import { graphlib, render } from "dagre-d3";
 import { Mapping, MappingVideo, MappingVideos, PartialMappingVideo } from "../../../sharedTypes";
-import { isNull } from "../utils/general";
+import { isDef, isNull } from "../utils/general";
+import { isVideoMappingDone, isVideoMappingLoading } from "../utils/specific";
 import { Card } from "./Card";
-
-enum MappingVideoState {
-	DONE = 'done',
-	LOADING = 'loading',
-	WAITING = 'waiting',
-}
 
 export class Graph {
 
@@ -30,6 +25,7 @@ export class Graph {
 		this.render = new render();
 		this.$svg = document.querySelector("#canvas");
 		this.svg = d3.select(this.$svg);
+		this.setSvgEvents();
 		this.svgG = this.svg.append("g");
 
 		const zoom = d3.zoom()
@@ -48,6 +44,9 @@ export class Graph {
 			this.center();
 		}
 		this.mapping = mapping;
+		if (isDef(this.selectedNode)) {
+			this.selectNode(this.selectedNode);
+		}
 	}
 
 	public static draw(videos: MappingVideos) {
@@ -62,7 +61,7 @@ export class Graph {
 		});
 
 		videos.forEach((video) => {
-			if (Graph.isVideoMappingDone(video)) {
+			if (isVideoMappingDone(video)) {
 				video.linkedIds.forEach((linkedId) => this.g.setEdge(video.id, linkedId));
 			}
 		});
@@ -76,8 +75,16 @@ export class Graph {
 		this.setNodeEvents();
 	}
 
+	public static setSvgEvents() {
+		this.svg.on('click', (event: MouseEvent) => {
+			this.clearSelectedNode();
+			Card.updateCard();
+		});
+	}
+
 	public static setNodeEvents() {
-		this.svgG.selectAll("svg .node").on("click", (event, nodeName) => {
+		this.svgG.selectAll("svg .node").on("click", (event: MouseEvent, nodeName) => {
+			event.stopPropagation();
 			this.selectNode(nodeName);
 		});
 	}
@@ -151,9 +158,9 @@ export class Graph {
 	}
 
 	public static getNodeLabel(video: MappingVideo | PartialMappingVideo) {
-		const label = Graph.isVideoMappingDone(video) ?
+		const label = isVideoMappingDone(video) ?
 			this.getNodeHtmlDone(video) :
-			Graph.isVideoMappingLoading(video) ? this.getNodeHtmlLoading(video) : this.getNodeHtmlWaiting(video);
+			isVideoMappingLoading(video) ? this.getNodeHtmlLoading(video) : this.getNodeHtmlWaiting(video);
 
 		return {
 			labelType: "html",
@@ -187,22 +194,9 @@ export class Graph {
 	}
 
 	public static getNodeHtmlWaiting(video: PartialMappingVideo): DocumentFragment {
-		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node-waiting"); // TODO: Change Icon
+		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node-waiting");
 		const template = document.importNode(nodeTemplate.content, true);
 
 		return template;
-	}
-
-	// TODO: Move to a util function
-	public static isVideoMappingDone(video: MappingVideo | PartialMappingVideo): video is MappingVideo {
-		return video.state === MappingVideoState.DONE;
-	}
-
-	public static isVideoMappingLoading(video: MappingVideo | PartialMappingVideo): video is PartialMappingVideo {
-		return video.state === MappingVideoState.LOADING;
-	}
-
-	public static isVideoMappingWaiting(video: MappingVideo | PartialMappingVideo): video is PartialMappingVideo {
-		return video.state === MappingVideoState.WAITING;
 	}
 }
