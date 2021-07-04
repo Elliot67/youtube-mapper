@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import dagreD3 from "dagre-d3";
+import { graphlib, render } from "dagre-d3";
 import { Mapping, MappingVideo, MappingVideos, PartialMappingVideo } from "../../../sharedTypes";
 import { isNull } from "../utils/general";
 
@@ -11,7 +11,7 @@ enum MappingVideoState {
 
 export class Graph {
 
-	public static g: dagreD3.graphlib.Graph;
+	public static g: graphlib.Graph;
 	public static render;
 	public static $svg: SVGElement;
 	public static svg: d3.Selection<SVGElement, unknown, null, undefined>;
@@ -23,10 +23,10 @@ export class Graph {
 	public static selectedNode: string | null = null;
 
 	public static init() {
-		this.g = new dagreD3.graphlib.Graph()
+		this.g = new graphlib.Graph()
 			.setGraph({ rankdir: 'LR' })
 			.setDefaultEdgeLabel(() => ({}));
-		this.render = new dagreD3.render();
+		this.render = new render();
 		this.$svg = document.querySelector("#canvas");
 		this.svg = d3.select(this.$svg);
 		this.svgG = this.svg.append("g");
@@ -84,11 +84,32 @@ export class Graph {
 	public static selectNode(nodeName) {
 		this.clearSelectedNode();
 		this.selectedNode = nodeName;
+		this.highlightPossiblePaths(nodeName);
+		this.highlightShortestPath(nodeName);
+	}
+
+	public static highlightPossiblePaths(nodeName): void {
 		this.nodePredecessors.push(nodeName);
 		this.updateNodePredecessorsRecursively(nodeName);
 		const nodes = d3.selectAll(".node").filter((datum) => this.nodePredecessors.includes(datum));
-		nodes.style('stroke', 'var(--primary-color)');
+		nodes.style('stroke', 'var(--secondary-color)');
 		this.nodePredecessors = [];
+	}
+
+	public static highlightShortestPath(nodeName) {
+		const mainName = this.mapping.mainId;
+		const nodesName = [mainName, nodeName];
+		const paths = graphlib.alg.dijkstra(this.g, mainName);
+		if (paths[nodeName].distance === Infinity) {
+			return;
+		}
+
+		while (paths[nodeName].distance > 0 && paths[nodeName].predecessor !== mainName) {
+			nodeName = paths[nodeName].predecessor;
+			nodesName.push(nodeName);
+		}
+		const nodes = d3.selectAll(".node").filter((datum) => nodesName.includes(datum));
+		nodes.style('stroke', 'var(--primary-color)');
 	}
 
 	public static updateNodePredecessorsRecursively(nodeName) {
