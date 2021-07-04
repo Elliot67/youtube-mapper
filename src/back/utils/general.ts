@@ -9,4 +9,3 @@ export function isNull(data: any): data is null {
 export function isDef<T>(data: T | null | undefined | ''): data is T {
 	return !isUndefined(data) && !isNull(data) && data !== '';
 }
-

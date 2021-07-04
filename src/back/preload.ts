@@ -8,4 +8,3 @@ const endpoints: _App = {
 }
 
 contextBridge.exposeInMainWorld('_app', endpoints);
-
