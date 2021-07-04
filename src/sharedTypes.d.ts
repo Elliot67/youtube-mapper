@@ -16,7 +16,7 @@ export interface MappingError {
 export type MappingVideos = Map<string, MappingVideo | PartialMappingVideo>;
 
 export interface PartialMappingVideo {
-	state: MappVideoState;
+	state: MappingVideoState;
 	id: string;
 }
 

@@ -2,6 +2,7 @@ import * as d3 from "d3";
 import { graphlib, render } from "dagre-d3";
 import { Mapping, MappingVideo, MappingVideos, PartialMappingVideo } from "../../../sharedTypes";
 import { isNull } from "../utils/general";
+import { Card } from "./Card";
 
 enum MappingVideoState {
 	DONE = 'done',
@@ -84,8 +85,10 @@ export class Graph {
 	public static selectNode(nodeName) {
 		this.clearSelectedNode();
 		this.selectedNode = nodeName;
+		Card.updateCard(this.mapping.data.get(nodeName));
 		this.highlightPossiblePaths(nodeName);
 		this.highlightShortestPath(nodeName);
+		this.highLightNode(nodeName);
 	}
 
 	public static highlightPossiblePaths(nodeName): void {
@@ -110,6 +113,13 @@ export class Graph {
 		}
 		const nodes = d3.selectAll(".node").filter((datum) => nodesName.includes(datum));
 		nodes.style('stroke', 'var(--primary-color)');
+		nodes.style('--stroke-width', '3px');
+	}
+
+	public static highLightNode(nodeName) {
+		const node = d3.selectAll(".node").filter((datum) => nodeName === datum);
+		node.style('stroke', 'var(--primary-color)');
+		node.style('--stroke-width', '5px');
 	}
 
 	public static updateNodePredecessorsRecursively(nodeName) {
@@ -124,7 +134,7 @@ export class Graph {
 
 	public static clearSelectedNode() {
 		this.selectedNode = null;
-		d3.selectAll(".node").style('stroke', 'none');
+		d3.selectAll(".node").style('stroke', 'none').style('--stroke-width', '1.5px');
 	}
 
 	public static center() {
@@ -183,6 +193,7 @@ export class Graph {
 		return template;
 	}
 
+	// TODO: Move to a util function
 	public static isVideoMappingDone(video: MappingVideo | PartialMappingVideo): video is MappingVideo {
 		return video.state === MappingVideoState.DONE;
 	}

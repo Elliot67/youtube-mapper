@@ -17,7 +17,7 @@ body {
 
 	.node rect {
 		fill: var(--light-background-color);
-		stroke-width: 1.5px;
+		stroke-width: var(--stroke-width);
 	}
 	.edgePath path {
 		stroke: var(--border-color);
@@ -40,7 +40,7 @@ body {
 		.node-image {
 			display: block;
 			width: 100%;
-			height: 158px;
+			height: 157px;
 			object-fit: cover;
 			grid-column: span 2;
 		}
@@ -74,19 +74,6 @@ body {
 
 	.node-waiting {
 		display: flex;
-
-		.node-search {
-			margin: auto;
-			height: 60px;
-			width: 60px;
-			display: flex;
-			border-radius: 50%;
-			transition-duration: 0.3s;
-
-			&:hover {
-				background-color: var(--border-color);
-			}
-		}
 
 		.node-searchIcon {
 			margin: auto;

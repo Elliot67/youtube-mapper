@@ -18,7 +18,6 @@
 			</form>
 
 			<div class="Card Card-container-JS" data-state="hidden">
-				<div class="Card-preview Card-preview-JS"></div>
 			</div>
 		</sidebar>
 
@@ -42,11 +41,45 @@
 
 		<template id="node-waiting">
 			<div class="node-container node-waiting" data-id="">
-				<div class="node-search">
-					<svg class="node-searchIcon">
-						<use href="#svg-search"></use>
-					</svg>
+				<svg class="node-searchIcon">
+					<use href="#svg-search"></use>
+				</svg>
+			</div>
+		</template>
+
+		<template id="card-done">
+			<div class="card-container card-done" data-id="">
+				<div class="card-imageContainer">
+					<img class="card-image" src="" alt="" />
+					<p class="card-imageTimer"></p>
 				</div>
+				<p class="card-title"></p>
+				<p class="card-metadata">
+					<span class="card-viewCounter"></span>
+					-
+					<span class="card-uploadDate"></span>
+				</p>
+				<div class="card-separator"></div>
+				<div class="card-channel">
+					<img class="card-channelImage" src="" alt="" />
+					<p class="card-channelName"></p>
+				</div>
+			</div>
+		</template>
+
+		<template id="card-loading">
+			<div class="card-container card-loading" data-id="">
+				<svg class="card-loader svg-rotate">
+					<use href="#svg-loader"></use>
+				</svg>
+			</div>
+		</template>
+
+		<template id="card-waiting">
+			<div class="card-container card-waiting" data-id="">
+				<svg class="card-searchIcon">
+					<use href="#svg-search"></use>
+				</svg>
 			</div>
 		</template>
 

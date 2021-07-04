@@ -73,7 +73,6 @@ export class Mapper {
 
 		ipcMain.on('stop-mapping', (e) => {
 			Mapper.mapping.authorizedToRun = false;
-			Mapper.responseEvent = null;
 		});
 
 	}

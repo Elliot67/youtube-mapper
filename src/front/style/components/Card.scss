@@ -8,10 +8,87 @@
 		display: none;
 	}
 
-	&[data-state="loading"] {
-		height: 200px;
+	&[data-state="loading"],
+	&[data-state="waiting"] {
+		height: 250px;
 	}
 
-	&-preview {
+	.card-done {
+		.card-imageContainer {
+			position: relative;
+			margin-bottom: 8px;
+		}
+
+		.card-image {
+			display: block;
+			width: 100%;
+		}
+
+		.card-imageTimer {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			padding: 2px 5px;
+			margin: 4px 6px;
+			background-color: var(--dark-background-color);
+			font-size: 14px;
+			letter-spacing: 1px;
+			border-radius: 2px;
+		}
+
+		.card-title {
+			margin-bottom: 7px;
+		}
+
+		.card-metadata {
+			color: var(--secondary-color);
+			font-size: 14px;
+		}
+
+		.card-separator {
+			background-color: var(--border-color);
+			height: 1px;
+			margin: 12px 0;
+		}
+
+		.card-channel {
+			display: grid;
+			grid-template-columns: 40px 1fr;
+			grid-gap: 14px;
+		}
+
+		.card-channelImage {
+			display: block;
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+		}
+
+		.card-channelName {
+			display: flex;
+			align-items: center;
+		}
+	}
+
+	.card-loading {
+		height: 100%;
+		display: flex;
+
+		.card-loader {
+			margin: auto;
+			height: 40px;
+			width: 40px;
+		}
+	}
+
+	.card-waiting {
+		height: 100%;
+		display: flex;
+
+		.card-searchIcon {
+			margin: auto;
+			height: 40px;
+			width: 40px;
+		}
 	}
 }
