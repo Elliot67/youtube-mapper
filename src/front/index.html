@@ -4,8 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
-		<meta http-equiv="X-Content-Security-Policy" content="script-src 'self'" />
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'" />
 		<title>Youtube mapper</title>
 		<link rel="stylesheet" href="style/style.scss" />
 	</head>
@@ -83,13 +82,13 @@
 			</div>
 		</template>
 
-		<svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+		<svg xmlns="http://www.w3.org/2000/svg" class="none">
 			<symbol viewBox="0 0 24 24" id="svg-loader" fill="currentColor" stroke="none">
 				<path d="M18.364 5.636L16.95 7.05A7 7 0 1 0 19 12h2a9 9 0 1 1-2.636-6.364z" />
 			</symbol>
 		</svg>
 
-		<svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+		<svg xmlns="http://www.w3.org/2000/svg" class="none">
 			<symbol viewBox="0 0 24 24" id="svg-pause" fill="currentColor" stroke="none">
 				<path
 					d="M6 5h2v14H6V5zm10 0h2v14h-2V5z"
