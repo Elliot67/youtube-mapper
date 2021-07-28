@@ -20,3 +20,7 @@ export function formatTime(seconds: number): string {
 		s > 9 ? s : '0' + s
 	].filter(Boolean).join(':');
 }
+
+export function generateUniqueId(): string {
+	return (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
+}

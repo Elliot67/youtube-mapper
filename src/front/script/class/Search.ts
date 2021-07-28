@@ -1,5 +1,5 @@
 import { Logs } from "./Logs";
-import { isDef } from "../utils/general";
+import { generateUniqueId, isDef } from "../utils/general";
 
 enum STATE {
 	HIDDEN = "hidden",
@@ -14,6 +14,7 @@ export class Search {
 	public static $button: HTMLButtonElement;
 	public static $buttonStop: HTMLButtonElement;
 	public static $error: HTMLInputElement;
+	public static searchId: string | null = null;
 
 	public static init() {
 		this.log = new Logs('Search', true);
@@ -42,11 +43,13 @@ export class Search {
 			this.$input.disabled = true;
 
 			this.log.log(['Searching video with', query]);
-			window._app.mapVideo(query);
+			this.searchId = generateUniqueId();
+			window._app.mapVideo(query, this.searchId);
 		});
 
 		this.$buttonStop.addEventListener('click', () => {
 			window._app.stopMapping();
+			this.unblockSearch();
 		});
 	}
 

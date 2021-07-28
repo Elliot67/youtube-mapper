@@ -18,17 +18,23 @@ Card.init();
 
 window._app.on('map-video', (e, data: Mapping) => {
 	log.log(['Got response from map-video', data]);
-	Graph.mapIt(data); // TODO: Verify mainId are corresponding
-	Card.globalUpdate(data);
+
+	if (data.searchId !== Search.searchId) {
+		log.log(['The response was not from the last search']);
+		return;
+	}
 
 	if (data.error.isError) {
-		console.log('errror', data);
 		if (data.error.errorCode === 100) {
 			Search.showError(data.error.publicResponse);
+			return;
 		} else {
 			// TODO: Show error in a seperate block (inside sidebar)
 		}
 	}
+
+	Graph.mapIt(data);
+	Card.globalUpdate(data);
 });
 
 

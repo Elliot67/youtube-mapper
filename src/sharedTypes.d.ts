@@ -1,4 +1,5 @@
 export interface Mapping {
+	searchId: string;
 	authorizedToRun: boolean;
 	mainId: string | null;
 	data: MappingVideos;
@@ -43,7 +44,7 @@ export interface MappingVideoAuthor {
 }
 
 export interface _App {
-	mapVideo(query: string): void,
+	mapVideo(query: string, searchId: string): void,
 	stopMapping(): void,
 	on(channel: string, func: (event: any, ...args: any[]) => void): any;
 }

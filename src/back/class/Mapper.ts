@@ -23,7 +23,7 @@ export class Mapper {
 
 	public static events() {
 
-		ipcMain.on('map-video', async (e, query: string) => {
+		ipcMain.on('map-video', async (e, query: string, searchId: string) => {
 			Mapper.resetMapping();
 			Mapper.responseEvent = e;
 
@@ -39,6 +39,7 @@ export class Mapper {
 				return;
 			}
 
+			Mapper.mapping.searchId = searchId;
 			Mapper.mapping.authorizedToRun = true;
 			Mapper.mapping.mainId = mainId;
 			Mapper.mapping.startDate = new Date();
@@ -186,6 +187,7 @@ export class Mapper {
 
 	public static resetMapping() {
 		Mapper.mapping = {
+			searchId: null,
 			authorizedToRun: false,
 			mainId: null,
 			data: new Map(),
