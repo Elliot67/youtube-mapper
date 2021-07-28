@@ -12,6 +12,7 @@ export class Search {
 	public static $form: HTMLFormElement;
 	public static $input: HTMLInputElement;
 	public static $button: HTMLButtonElement;
+	public static $buttonStop: HTMLButtonElement;
 	public static $error: HTMLInputElement;
 
 	public static init() {
@@ -19,7 +20,8 @@ export class Search {
 
 		this.$form = document.querySelector(".JS-Search-form");
 		this.$input = this.$form.querySelector("input");
-		this.$button = this.$form.querySelector('.JS-Search-button')
+		this.$button = this.$form.querySelector('.JS-Search-button');
+		this.$buttonStop = this.$form.querySelector('.JS-Search-button-stop');
 		this.$error = this.$form.querySelector(".JS-Search-error");
 		this.events();
 	}
@@ -36,16 +38,22 @@ export class Search {
 			}
 
 			this.$button.disabled = true;
+			this.$buttonStop.disabled = false;
 			this.$input.disabled = true;
 
 			this.log.log(['Searching video with', query]);
 			window._app.mapVideo(query);
+		});
+
+		this.$buttonStop.addEventListener('click', () => {
+			window._app.stopMapping();
 		});
 	}
 
 	public static showError(text: string) {
 		this.$error.innerText = text;
 		this.$error.dataset.state = STATE.VISIBLE;
+		this.unblockSearch();
 	}
 
 	public static clearError() {
@@ -53,8 +61,8 @@ export class Search {
 	}
 
 	public static unblockSearch() {
-		this.$input.value = "";
 		this.$button.disabled = false;
+		this.$buttonStop.disabled = true;
 		this.$input.disabled = false;
 	}
 }

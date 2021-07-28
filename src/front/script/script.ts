@@ -22,7 +22,12 @@ window._app.on('map-video', (e, data: Mapping) => {
 	Card.globalUpdate(data);
 
 	if (data.error.isError) {
-		Search.showError(data.error.publicResponse);
+		console.log('errror', data);
+		if (data.error.errorCode === 100) {
+			Search.showError(data.error.publicResponse);
+		} else {
+			// TODO: Show error in a seperate block (inside sidebar)
+		}
 	}
 });
 

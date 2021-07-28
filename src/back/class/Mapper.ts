@@ -32,6 +32,7 @@ export class Mapper {
 				mainId = ytdl.getVideoID(query);
 			} catch (error) {
 				Mapper.mapping.error.isError = true;
+				Mapper.mapping.error.errorCode = 100;
 				Mapper.mapping.error.publicResponse = 'Error while finding the video id';
 				Mapper.mapping.error.debug.push(error);
 				Mapper.responseEvent.reply('map-video', Mapper.mapping);
@@ -50,6 +51,7 @@ export class Mapper {
 		ipcMain.on('stop-branch', async (e, videoId: string) => {
 			if (!Mapper.mapping.data.has(videoId)) {
 				Mapper.mapping.error.isError = true;
+				Mapper.mapping.error.errorCode = 101;
 				Mapper.mapping.error.publicResponse = 'The video ID was not found';
 				Mapper.mapping.error.debug.push('Can\'t stop branch of not found video');
 				return;
@@ -122,6 +124,7 @@ export class Mapper {
 			return Promise.resolve(response);
 		} catch (error) {
 			console.log(error, 'Error while finding the video : ', id);
+			// TODO: Should add error to mapping
 			return Promise.reject();
 		}
 	}
@@ -192,6 +195,7 @@ export class Mapper {
 				isError: false,
 				publicResponse: "",
 				debug: [],
+				errorCode: 0,
 			},
 		};
 	}

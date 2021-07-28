@@ -58,3 +58,7 @@ button {
 .none {
 	display: none;
 }
+
+[type="search"]::-webkit-search-cancel-button {
+	cursor: pointer;
+}

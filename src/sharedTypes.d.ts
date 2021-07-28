@@ -11,6 +11,7 @@ export interface MappingError {
 	isError: boolean;
 	publicResponse: string;
 	debug: any[];
+	errorCode: number;
 }
 
 export type MappingVideos = Map<string, MappingVideo | PartialMappingVideo>;
@@ -43,6 +44,6 @@ export interface MappingVideoAuthor {
 
 export interface _App {
 	mapVideo(query: string): void,
-	stopMapping(id: string): void,
+	stopMapping(): void,
 	on(channel: string, func: (event: any, ...args: any[]) => void): any;
 }

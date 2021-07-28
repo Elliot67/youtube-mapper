@@ -4,11 +4,12 @@
 	background-color: var(--light-background-color);
 	border: var(--border);
 	display: grid;
-	grid-template-columns: 1fr auto;
+	grid-template-columns: 1fr 1fr;
 	grid-gap: var(--spacer);
 
 	&-input {
 		background-color: var(--medium-background-color);
+		grid-column: span 2;
 	}
 
 	&-error {
@@ -19,5 +20,8 @@
 		&[data-state="hidden"] {
 			display: none;
 		}
+	}
+
+	&-stopButton {
 	}
 }

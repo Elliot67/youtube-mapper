@@ -6,16 +6,38 @@
 	color: var(--primary-color);
 	cursor: pointer;
 	transition-duration: 0.3s;
+	text-transform: uppercase;
 
-	&:hover {
+	&:hover:not(:disabled) {
 		background-color: var(--primary-color);
 		color: var(--text-primary-color);
 	}
 
 	&:disabled {
-		// TODO: Need a better design
 		opacity: 0.5;
 		background-color: var(--primary-color);
 		color: var(--text-primary-color);
+		cursor: not-allowed;
+	}
+}
+
+.ButtonS {
+	padding: 0.5em 1em;
+	min-width: 10ch;
+	color: var(--info-color);
+	cursor: pointer;
+	transition-duration: 0.3s;
+	text-transform: uppercase;
+
+	&:hover:not(:disabled) {
+		color: var(--info-color);
+		border: solid var(--info-color) 1px;
+		border-radius: var(--radius);
+	}
+
+	&:disabled {
+		opacity: 0.5;
+		color: var(--secondary-color);
+		cursor: not-allowed;
 	}
 }
