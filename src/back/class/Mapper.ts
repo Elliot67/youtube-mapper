@@ -26,6 +26,7 @@ export class Mapper {
 		ipcMain.on('map-video', async (e, query: string, searchId: string) => {
 			Mapper.resetMapping();
 			Mapper.responseEvent = e;
+			Mapper.mapping.searchId = searchId;
 
 			let mainId: string;
 			try {
@@ -39,7 +40,6 @@ export class Mapper {
 				return;
 			}
 
-			Mapper.mapping.searchId = searchId;
 			Mapper.mapping.authorizedToRun = true;
 			Mapper.mapping.mainId = mainId;
 			Mapper.mapping.startDate = new Date();

@@ -16,6 +16,8 @@ Graph.init();
 Search.init();
 Card.init();
 
+// FIXME: Starting a new mapping when the previous one is not ended create errors
+
 window._app.on('map-video', (e, data: Mapping) => {
 	log.log(['Got response from map-video', data]);
 

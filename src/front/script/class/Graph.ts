@@ -18,6 +18,8 @@ export class Graph {
 	public static nodePredecessors = [];
 	public static selectedNode: string | null = null;
 
+	public static searchId: string | null = null;
+
 	public static init() {
 		this.g = new graphlib.Graph()
 			.setGraph({ rankdir: 'LR' })
@@ -38,7 +40,18 @@ export class Graph {
 		this.transform(1, 1, 0.25);
 	}
 
-	public static mapIt(mapping: Mapping) {
+	public static renew(searchId: string): void {
+		this.searchId = searchId;
+		this.g = new graphlib.Graph()
+			.setGraph({ rankdir: 'LR' })
+			.setDefaultEdgeLabel(() => ({}));
+	}
+
+	public static mapIt(mapping: Mapping): void {
+		if (this.searchId !== mapping.searchId) {
+			this.renew(mapping.searchId);
+		}
+
 		this.draw(mapping.data);
 		if (isNull(this.mapping)) {
 			this.center();
@@ -56,7 +69,7 @@ export class Graph {
 
 		// Round nodes
 		this.g.nodes().forEach((v) => {
-			var node = this.g.node(v);
+			const node = this.g.node(v);
 			node.rx = node.ry = 4;
 		});
 
