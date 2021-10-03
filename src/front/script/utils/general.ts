@@ -24,3 +24,9 @@ export function formatTime(seconds: number): string {
 export function generateUniqueId(): string {
 	return (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
 }
+
+export function clearChildrenNodes(parent: HTMLElement) {
+	while (parent.firstChild) {
+		parent.removeChild(parent.firstChild);
+	}
+}

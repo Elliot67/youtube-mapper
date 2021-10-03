@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import { graphlib, render } from "dagre-d3";
 import { Mapping, MappingVideo, MappingVideos, PartialMappingVideo } from "../../../sharedTypes";
 import { isDef, isNull } from "../utils/general";
-import { isVideoMappingDone, isVideoMappingLoading } from "../utils/specific";
+import { getHtmlTemplate, isVideoMappingDone, isVideoMappingLoading } from "../utils/specific";
 import { Card } from "./Card";
 
 export class Graph {
@@ -182,9 +182,7 @@ export class Graph {
 	}
 
 	public static getNodeHtmlDone(video: MappingVideo): DocumentFragment {
-		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node-done");
-		const template = document.importNode(nodeTemplate.content, true);
-
+		const template = getHtmlTemplate("template#node-done");
 		template.querySelector(".node-container").setAttribute('data-id', video.id);
 
 
@@ -200,16 +198,10 @@ export class Graph {
 	}
 
 	public static getNodeHtmlLoading(video: PartialMappingVideo): DocumentFragment {
-		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node-loading");
-		const template = document.importNode(nodeTemplate.content, true);
-
-		return template;
+		return getHtmlTemplate("template#node-loading");
 	}
 
 	public static getNodeHtmlWaiting(video: PartialMappingVideo): DocumentFragment {
-		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#node-waiting");
-		const template = document.importNode(nodeTemplate.content, true);
-
-		return template;
+		return getHtmlTemplate("template#node-waiting");
 	}
 }

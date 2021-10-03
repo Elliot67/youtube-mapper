@@ -21,6 +21,7 @@
 @import "./components/Sidebar.scss";
 @import "./components/Card.scss";
 @import "./components/Search.scss";
+@import "./components/Errors.scss";
 
 * {
 	outline: none;
@@ -29,8 +30,8 @@
 body {
 	background-color: var(--dark-background-color);
 	color: var(--text-primary-color);
-	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji,
-		Segoe UI Emoji;
+	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+		sans-serif, Apple Color Emoji, Segoe UI Emoji;
 	display: grid;
 	grid-template-columns: auto 1fr;
 }

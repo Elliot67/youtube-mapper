@@ -1,10 +1,6 @@
 import { Logs } from "./Logs";
 import { generateUniqueId, isDef } from "../utils/general";
-
-enum STATE {
-	HIDDEN = "hidden",
-	VISIBLE = "",
-};
+import { Errors } from "./Errors";
 
 export class Search {
 
@@ -13,7 +9,6 @@ export class Search {
 	public static $input: HTMLInputElement;
 	public static $button: HTMLButtonElement;
 	public static $buttonStop: HTMLButtonElement;
-	public static $error: HTMLInputElement;
 	public static searchId: string | null = null;
 
 	public static init() {
@@ -23,18 +18,20 @@ export class Search {
 		this.$input = this.$form.querySelector("input");
 		this.$button = this.$form.querySelector('.JS-Search-button');
 		this.$buttonStop = this.$form.querySelector('.JS-Search-button-stop');
-		this.$error = this.$form.querySelector(".JS-Search-error");
 		this.events();
 	}
 
 	public static events() {
 		this.$form.addEventListener('submit', (e) => {
 			e.preventDefault();
-			this.clearError();
+			Errors.resetErrors();
 
 			const query = this.$input.value;
 			if (!isDef(query)) {
-				this.showError('The URL or ID is required');
+				Errors.showErrors([{
+					publicResponse: 'The URL or ID is required',
+					debug: 'Invalid seach item',
+				}]);
 				return;
 			}
 
@@ -51,16 +48,6 @@ export class Search {
 			window._app.stopMapping();
 			this.unblockSearch();
 		});
-	}
-
-	public static showError(text: string) {
-		this.$error.innerText = text;
-		this.$error.dataset.state = STATE.VISIBLE;
-		this.unblockSearch();
-	}
-
-	public static clearError() {
-		this.$error.dataset.state = STATE.HIDDEN;
 	}
 
 	public static unblockSearch() {

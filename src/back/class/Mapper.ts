@@ -32,10 +32,11 @@ export class Mapper {
 			try {
 				mainId = ytdl.getVideoID(query);
 			} catch (error) {
-				Mapper.mapping.error.isError = true;
-				Mapper.mapping.error.errorCode = 100;
-				Mapper.mapping.error.publicResponse = 'Error while finding the video id';
-				Mapper.mapping.error.debug.push(error);
+				Mapper.mapping.errors.push({
+					publicResponse: 'Error while finding the video id',
+					debug: error,
+					errorCode: 100,
+				});
 				Mapper.responseEvent.reply('map-video', Mapper.mapping);
 				return;
 			}
@@ -51,10 +52,11 @@ export class Mapper {
 		// TODO: Experimental, need to think how to build somthing robust
 		ipcMain.on('stop-branch', async (e, videoId: string) => {
 			if (!Mapper.mapping.data.has(videoId)) {
-				Mapper.mapping.error.isError = true;
-				Mapper.mapping.error.errorCode = 101;
-				Mapper.mapping.error.publicResponse = 'The video ID was not found';
-				Mapper.mapping.error.debug.push('Can\'t stop branch of not found video');
+				Mapper.mapping.errors.push({
+					publicResponse: 'The video ID was not found',
+					debug: 'Can\'t stop branch of not found video',
+					errorCode: 101,
+				});
 				return;
 			}
 
@@ -112,9 +114,11 @@ export class Mapper {
 			Mapper.sendUpdate();
 
 		} catch (error) {
-			Mapper.mapping.error.isError = true;
-			Mapper.mapping.error.debug.push(error);
-			Mapper.mapping.error.publicResponse = 'An error occurred while finding linked video ids';
+			Mapper.mapping.errors.push({
+				publicResponse: 'An error occurred while finding linked video ids',
+				debug: error,
+			});
+			Mapper.sendUpdate();
 		}
 	}
 
@@ -193,12 +197,7 @@ export class Mapper {
 			data: new Map(),
 			startDate: null,
 			lastUpdateDate: null,
-			error: {
-				isError: false,
-				publicResponse: "",
-				debug: [],
-				errorCode: 0,
-			},
+			errors: [],
 		};
 	}
 

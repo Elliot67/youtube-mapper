@@ -3,6 +3,7 @@ import { Card } from "./class/Card";
 import { Graph } from "./class/Graph"
 import { Search } from "./class/Search";
 import { Logs } from "./class/Logs";
+import { Errors } from "./class/Errors";
 
 declare global {
 	interface Window {
@@ -15,6 +16,7 @@ const log = new Logs('script', true);
 Graph.init();
 Search.init();
 Card.init();
+Errors.init();
 
 // FIXME: Starting a new mapping when the previous one is not ended create errors
 
@@ -26,13 +28,8 @@ window._app.on('map-video', (e, data: Mapping) => {
 		return;
 	}
 
-	if (data.error.isError) {
-		if (data.error.errorCode === 100) {
-			Search.showError(data.error.publicResponse);
-			return;
-		} else {
-			// TODO: Show error in a seperate block (inside sidebar)
-		}
+	if (data.errors.length > 0) {
+		Errors.showErrors(data.errors);
 	}
 
 	Graph.mapIt(data);

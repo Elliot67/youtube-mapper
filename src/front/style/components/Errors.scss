@@ -1,19 +1,16 @@
-.Search {
+.Errors {
 	margin: var(--spacer);
 	padding: var(--spacer);
 	background-color: var(--light-background-color);
 	border: var(--border);
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	grid-gap: var(--spacer);
 
 	&-header {
 		display: flex;
 		align-items: center;
-		grid-column: span 2;
+		margin-bottom: var(--spacer);
 	}
 
-	&-searchIcon {
+	&-warningIcon {
 		height: 1em;
 		width: 3em;
 	}
@@ -22,11 +19,12 @@
 		font-size: 1em;
 	}
 
-	&-input {
-		background-color: var(--medium-background-color);
-		grid-column: span 2;
+	&-messages {
+		font-size: 14px;
+		color: var(--secondary-color);
 	}
 
-	&-stopButton {
+	&[data-state="hidden"] {
+		display: none;
 	}
 }

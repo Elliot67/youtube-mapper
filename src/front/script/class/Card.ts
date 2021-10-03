@@ -1,7 +1,7 @@
 import { Mapping, MappingVideo, MappingVideoState, PartialMappingVideo } from "../../../sharedTypes";
 import { Graph } from "./Graph";
 import { formatTime, isDef } from "../utils/general";
-import { isVideoMappingDone, isVideoMappingLoading } from "../utils/specific";
+import { getHtmlTemplate, isVideoMappingDone, isVideoMappingLoading } from "../utils/specific";
 
 type CardStateType = 'hidden' | MappingVideoState;
 
@@ -14,16 +14,18 @@ enum CardState {
 
 export class Card {
 
+	public static $container: HTMLElement;
 	public static $card: HTMLElement;
 	public static currentState: CardStateType = CardState.NONE;
 
 	public static init() {
-		this.$card = document.querySelector(".Card-container-JS");
+		this.$container = document.querySelector('.Card-container-JS');
+		this.$card = document.querySelector(".Card-videoContainer-JS");
 	}
 
 	public static setState(state: CardStateType) {
 		this.currentState = state;
-		this.$card.dataset.state = state;
+		this.$container.dataset.state = state;
 	}
 
 	public static globalUpdate(data: Mapping) {
@@ -54,9 +56,7 @@ export class Card {
 	}
 
 	public static getCardHtmlDone(video: MappingVideo): DocumentFragment {
-		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#card-done");
-		const template = document.importNode(nodeTemplate.content, true);
-
+		const template = getHtmlTemplate("template#card-done");
 		template.querySelector(".card-image").setAttribute("src", video.thumbnailUrl);
 		const duration = formatTime(parseInt(video.lengthSeconds));
 		template.querySelector(".card-imageTimer").textContent = duration;
@@ -71,16 +71,10 @@ export class Card {
 	}
 
 	public static getCardHtmlLoading(video: PartialMappingVideo): DocumentFragment {
-		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#card-loading");
-		const template = document.importNode(nodeTemplate.content, true);
-
-		return template;
+		return getHtmlTemplate("template#card-loading")
 	}
 
 	public static getCardHtmlWaiting(video: PartialMappingVideo): DocumentFragment {
-		const nodeTemplate: HTMLTemplateElement = document.querySelector("template#card-waiting");
-		const template = document.importNode(nodeTemplate.content, true);
-
-		return template;
+		return getHtmlTemplate("template#card-waiting");
 	}
 }

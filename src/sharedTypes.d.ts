@@ -5,14 +5,13 @@ export interface Mapping {
 	data: MappingVideos;
 	startDate: Date | null;
 	lastUpdateDate: Date | null;
-	error: MappingError;
+	errors: MappingError[];
 }
 
 export interface MappingError {
-	isError: boolean;
 	publicResponse: string;
-	debug: any[];
-	errorCode: number;
+	debug: any;
+	errorCode?: number;
 }
 
 export type MappingVideos = Map<string, MappingVideo | PartialMappingVideo>;

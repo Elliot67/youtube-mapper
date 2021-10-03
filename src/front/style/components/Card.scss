@@ -8,9 +8,24 @@
 		display: none;
 	}
 
-	&[data-state="loading"],
-	&[data-state="waiting"] {
-		height: 250px;
+	&-header {
+		display: flex;
+		align-items: center;
+		margin-bottom: var(--spacer);
+	}
+
+	&-videoIcon {
+		height: 1em;
+		width: 3em;
+	}
+
+	&-title {
+		font-size: 1em;
+	}
+
+	&[data-state="loading"] &-videoContainer,
+	&[data-state="waiting"] &-videoContainer {
+		height: 200px;
 	}
 
 	.card-done {
