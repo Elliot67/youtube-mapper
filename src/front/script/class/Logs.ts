@@ -1,20 +1,12 @@
 export class Logs {
 
-	private cutLog: boolean;
-	private name: string;
-	private showLog: boolean;
+	public static allowLogs: boolean = false;
 
-	constructor(name, currentLog = false) {
-		this.cutLog = true;
-
-		this.name = name;
-		this.showLog = currentLog;
-
-		return this;
+	constructor(private name: string, private showLog: boolean = false) {
 	}
 
 	private show(data, groupTitle) {
-		if (!(this.cutLog && this.showLog)) {
+		if (!(Logs.allowLogs && this.showLog)) {
 			return;
 		}
 

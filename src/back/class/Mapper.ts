@@ -23,6 +23,9 @@ export class Mapper {
 
 	public static events() {
 
+		/**
+		 * Start a new mapping
+		 */
 		ipcMain.on('map-video', async (e, query: string, searchId: string) => {
 			Mapper.resetMapping();
 			Mapper.responseEvent = e;
@@ -46,10 +49,13 @@ export class Mapper {
 			Mapper.mapping.startDate = new Date();
 			Mapper.mapping.lastUpdateDate = new Date();
 
-			Mapper.findLinkedIdsRecursively(mainId, mainId);
+			Mapper.findLinkedIdsRecursively(searchId, mainId);
 		});
 
-		// TODO: Experimental, need to think how to build somthing robust
+		/**
+		 * Stop the search tree one a specific video | WIP
+		 * TODO: Need to think how to build somthing robust
+		 */
 		ipcMain.on('stop-branch', async (e, videoId: string) => {
 			if (!Mapper.mapping.data.has(videoId)) {
 				Mapper.mapping.errors.push({
@@ -76,8 +82,22 @@ export class Mapper {
 		});
 
 
+		/**
+		 * Stop the current mapping
+		 */
 		ipcMain.on('stop-mapping', (e) => {
 			Mapper.mapping.authorizedToRun = false;
+		});
+
+
+		/**
+		 * Stop the mapping for a running searchId
+		 * Should only be used when the front didn't ask to stop but is not listening to the answers
+		 */
+		ipcMain.on('not-listening', (e, searchId: string) => {
+			if (searchId === Mapper.mapping.searchId && Mapper.mapping.authorizedToRun) {
+				Mapper.mapping.authorizedToRun = false;
+			}
 		});
 
 	}
@@ -88,28 +108,30 @@ export class Mapper {
 		}
 	}
 
-	public static async findLinkedIdsRecursively(mainId: string, id: string) {
-		if (Mapper.shouldStopMapping(mainId)) {
+	public static async findLinkedIdsRecursively(searchId: string, videoId: string) {
+		if (Mapper.shouldStopMapping(searchId)) {
+			console.log('stopping the search');
 			return;
 		}
 
 		try {
-			console.log(`searching video : ${id}`);
-			const response = await Mapper.searchData(id);
-			Mapper.updateVideoMapping(id, response);
-			const nextIds = Mapper.getNextIds(id);
+			console.log(`searching video : ${videoId}`);
+			const response = await Mapper.searchData(videoId);
+			Mapper.updateVideoMapping(videoId, response);
+			const nextVideosId = Mapper.nextVideosId(videoId);
 
 			Mapper.sendUpdate()
-			if (Mapper.shouldStopMapping(mainId)) {
+			if (Mapper.shouldStopMapping(searchId)) {
+				console.log('stopping the search');
 				return;
 			}
 
-			nextIds.forEach((id) => {
-				console.log('going for new video : ', id);
-				Mapper.findLinkedIdsRecursively(mainId, id);
-				const video = Mapper.mapping.data.get(id);
+			nextVideosId.forEach((nextVideoId) => {
+				console.log('going for new video : ', nextVideoId);
+				Mapper.findLinkedIdsRecursively(searchId, nextVideoId);
+				const video = Mapper.mapping.data.get(nextVideoId);
 				video.state = MappingVideoState.LOADING;
-				Mapper.mapping.data.set(id, video);
+				Mapper.mapping.data.set(nextVideoId, video);
 			});
 			Mapper.sendUpdate();
 
@@ -125,11 +147,9 @@ export class Mapper {
 	public static async searchData(id: string): Promise<ytdl.videoInfo> {
 		try {
 			const response = await ytdl.getBasicInfo(Scraper.getYoutubeUrl(id));
-			Mapper.responseEvent.reply('log', response);
 			return Promise.resolve(response);
 		} catch (error) {
 			console.log(error, 'Error while finding the video : ', id);
-			// TODO: Should add error to mapping
 			return Promise.reject();
 		}
 	}
@@ -177,7 +197,7 @@ export class Mapper {
 		Mapper.mapping.lastUpdateDate = new Date();
 	}
 
-	public static getNextIds(id: string): string[] {
+	public static nextVideosId(id: string): string[] {
 		const video = Mapper.mapping.data.get(id) as MappingVideo;
 		const newIds: string[] = [];
 		video.linkedIds.forEach((linkedId) => {
@@ -201,12 +221,8 @@ export class Mapper {
 		};
 	}
 
-	public static shouldStopMapping(mainId: string): boolean {
-		const shouldStop = !Mapper.mapping.authorizedToRun || Mapper.mapping.mainId !== mainId;
-		if (shouldStop) {
-			console.log('stopping the search');
-		}
-		return shouldStop;
+	public static shouldStopMapping(searchId: string): boolean {
+		return !Mapper.mapping.authorizedToRun || Mapper.mapping.searchId !== searchId;
 	}
 
 	public static isVideoMappingDone(video: MappingVideo | PartialMappingVideo): video is MappingVideo {

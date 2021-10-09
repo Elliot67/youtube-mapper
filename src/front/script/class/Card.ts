@@ -1,7 +1,7 @@
 import { Mapping, MappingVideo, MappingVideoState, PartialMappingVideo } from "../../../sharedTypes";
 import { Graph } from "./Graph";
-import { formatTime, isDef } from "../utils/general";
-import { getHtmlTemplate, isVideoMappingDone, isVideoMappingLoading } from "../utils/specific";
+import { formatTime, isDef, getHtmlTemplate } from "../utils/general";
+import { isVideoMappingDone, isVideoMappingLoading } from "../utils/specific";
 
 type CardStateType = 'hidden' | MappingVideoState;
 

@@ -30,3 +30,10 @@ export function clearChildrenNodes(parent: HTMLElement) {
 		parent.removeChild(parent.firstChild);
 	}
 }
+
+export function getHtmlTemplate(selector: string): DocumentFragment {
+	const nodeTemplate: HTMLTemplateElement = document.querySelector(selector);
+	const template = document.importNode(nodeTemplate.content, true);
+
+	return template;
+}

@@ -1,6 +1,5 @@
 import { MappingError } from "../../../sharedTypes";
-import { clearChildrenNodes } from "../utils/general";
-import { getHtmlTemplate } from "../utils/specific";
+import { clearChildrenNodes, getHtmlTemplate } from "../utils/general";
 import { Logs } from "./Logs";
 
 enum STATE {
@@ -19,8 +18,6 @@ export class Errors {
 		this.log = new Logs('Search', true);
 		this.$container = document.querySelector('.JS-Errors-container');
 		this.$ulContainer = this.$container.querySelector('ul');
-
-		console.log(this.$container, this.$ulContainer);
 	}
 
 	public static showErrors(errors: MappingError[]) {

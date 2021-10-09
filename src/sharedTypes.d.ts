@@ -45,5 +45,6 @@ export interface MappingVideoAuthor {
 export interface _App {
 	mapVideo(query: string, searchId: string): void,
 	stopMapping(): void,
+	notListening(searchId: string): void,
 	on(channel: string, func: (event: any, ...args: any[]) => void): any;
 }

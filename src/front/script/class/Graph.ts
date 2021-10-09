@@ -1,8 +1,8 @@
 import * as d3 from "d3";
 import { graphlib, render } from "dagre-d3";
 import { Mapping, MappingVideo, MappingVideos, PartialMappingVideo } from "../../../sharedTypes";
-import { isDef, isNull } from "../utils/general";
-import { getHtmlTemplate, isVideoMappingDone, isVideoMappingLoading } from "../utils/specific";
+import { isDef, isNull, getHtmlTemplate } from "../utils/general";
+import { isVideoMappingDone, isVideoMappingLoading } from "../utils/specific";
 import { Card } from "./Card";
 
 export class Graph {
@@ -123,7 +123,7 @@ export class Graph {
 		const mainName = this.mapping.mainId;
 		const nodesName = [mainName, nodeName];
 		const paths = graphlib.alg.dijkstra(this.g, mainName);
-		if (paths[nodeName].distance === Infinity) {
+		if (!isDef(paths[nodeName]) ||paths[nodeName].distance === Infinity) {
 			return;
 		}
 
@@ -143,7 +143,7 @@ export class Graph {
 	}
 
 	public static updateNodePredecessorsRecursively(nodeName) {
-		const predecessors = this.g.predecessors(nodeName);
+		const predecessors = this.g.predecessors(nodeName) || [];
 		predecessors.forEach((predecessorNodeName) => {
 			if (!this.nodePredecessors.includes(predecessorNodeName)) {
 				this.nodePredecessors.push(predecessorNodeName);
