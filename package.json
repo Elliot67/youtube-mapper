@@ -1,15 +1,21 @@
 {
 	"name": "youtube-mapper",
+	"description": "Create a graph from youtube videos by following end screen links. Helpful to easily visualize interactive video paths.",
 	"version": "1.0.0",
-	"author": "Elliot67",
+	"author": "Elliot Lintz",
 	"license": "MIT",
 	"scripts": {
 		"b-watch": "tsc --project ./src/back/tsconfig.json -w",
 		"b-build": "tsc --project ./src/back/tsconfig.json",
-		"b-start": "electron ./src/back/dist/main.js --inspect --trace-warnings",
+		"b-start": "electron ./src/back/dist/main.js --inspect --trace-warnings NODE_ENV=dev",
 		"f-watch": "parcel watch ./src/front/index.html --out-dir ./src/front/dist --public-url ./ --no-hmr",
-		"f-build": "parcel build ./src/front/index.html --out-dir ./src/front/dist --public-url ./"
+		"f-build": "parcel build ./src/front/index.html --out-dir ./src/front/dist --public-url ./",
+		"build-w": "electron-builder -w",
+		"build-l": "electron-builder -l",
+		"build-m": "electron-builder -m"
 	},
+	"postinstall": "electron-builder install-app-deps",
+	"main": "src/back/dist/main.js",
 	"devDependencies": {
 		"@babel/core": "^7.14.5",
 		"@electron-forge/cli": "^6.0.0-beta.61",
@@ -17,6 +23,7 @@
 		"@types/dagre": "^0.7.44",
 		"@types/dagre-d3": "^0.6.2",
 		"electron": "^15.1.2",
+		"electron-builder": "^22.13.1",
 		"parcel-bundler": "^1.12.5",
 		"sass": "^1.34.1",
 		"typescript": "^4.3.4"
@@ -28,5 +35,33 @@
 	},
 	"browserslist": [
 		"last 1 Chrome version"
-	]
+	],
+	"build": {
+		"appId": "youtube-mapper",
+		"productName": "Youtube Mapper",
+		"mac": {
+			"icon": "build/icons/mac/icon.icns",
+			"target": [
+				"dmg"
+			],
+			"category": "public.app-category.video"
+		},
+		"win": {
+			"icon": "build/icons/win/icon.ico",
+			"target": [
+				"nsis"
+			]
+		},
+		"nsis": {
+			"deleteAppDataOnUninstall": true
+		},
+		"linux": {
+			"category": "Video",
+			"target": [
+				"deb"
+			],
+			"icon": "build/icons/png",
+			"maintainer": "Elliot Lintz"
+		}
+	}
 }

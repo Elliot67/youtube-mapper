@@ -10,7 +10,10 @@ function createWindow() {
 		}
 	})
 	win.maximize();
-	win.webContents.openDevTools();
+	if (process.env.NODE_ENV === 'dev') {
+		win.webContents.openDevTools();
+	}
+	win.setMenu(null);
 	win.show();
 	win.loadFile(path.join(__dirname, '../../front/dist/index.html'))
 		.catch((error) => console.log(error));

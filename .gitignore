@@ -3,3 +3,4 @@ node_modules/
 src/front/dist/
 src/back/dist/
 data/
+dist/
