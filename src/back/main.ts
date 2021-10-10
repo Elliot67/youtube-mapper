@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, shell } from "electron";
 import * as path from "path";
 import { Mapper } from "./class/Mapper";
 
@@ -14,11 +14,16 @@ function createWindow() {
 	win.show();
 	win.loadFile(path.join(__dirname, '../../front/dist/index.html'))
 		.catch((error) => console.log(error));
+
+	win.webContents.setWindowOpenHandler(({ url }) => {
+		shell.openExternal(url);
+		return { action: 'deny' };
+	});
 }
 
 app.on('window-all-closed', function () {
 	if (process.platform !== 'darwin') app.quit();
-})
+});
 
 
 app.whenReady().then(() => {

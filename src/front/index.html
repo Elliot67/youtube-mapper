@@ -86,10 +86,10 @@
 
 		<template id="card-done">
 			<div class="card-container card-done" data-id="">
-				<div class="card-imageContainer">
+				<a class="card-imageContainer" href="" target="_blank">
 					<img class="card-image" src="" alt="" />
 					<p class="card-imageTimer"></p>
-				</div>
+				</a>
 				<p class="card-title"></p>
 				<p class="card-metadata">
 					<span class="card-viewCounter"></span>
@@ -98,8 +98,15 @@
 				</p>
 				<div class="card-separator"></div>
 				<div class="card-channel">
-					<img class="card-channelImage" src="" alt="" />
-					<p class="card-channelName"></p>
+					<a class="card-channelImageLink" href="" target="_blank">
+						<img class="card-channelImage" src="" alt="" />
+					</a>
+					<p class="card-channelNameContainer">
+						<span class="card-channelName"></span>
+						<svg class="card-verifiedIcon">
+							<use href="#svg-check"></use>
+						</svg>
+					</p>
 				</div>
 			</div>
 		</template>
@@ -183,6 +190,19 @@
 			>
 				<path
 					d="M4 20v-6a8 8 0 1 1 16 0v6h1v2H3v-2h1zm2 0h12v-6a6 6 0 1 0-12 0v6zm5-18h2v3h-2V2zm8.778 2.808l1.414 1.414-2.12 2.121-1.415-1.414 2.121-2.121zM2.808 6.222l1.414-1.414 2.121 2.12L4.93 8.344 2.808 6.222zM7 14a5 5 0 0 1 5-5v2a3 3 0 0 0-3 3H7z"
+				/>
+			</symbol>
+		</svg>
+
+		<svg xmlns="http://www.w3.org/2000/svg" class="none">
+			<symbol
+				viewBox="0 0 24 24"
+				id="svg-check"
+				fill="currentColor"
+				stroke="none"
+			>
+				<path
+					d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-.997-4L6.76 11.757l1.414-1.414 2.829 2.829 5.656-5.657 1.415 1.414L11.003 16z"
 				/>
 			</symbol>
 		</svg>

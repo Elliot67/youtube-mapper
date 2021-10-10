@@ -14,30 +14,32 @@
 	}
 
 	&:disabled {
-		opacity: 0.5;
-		background-color: var(--primary-color);
+		opacity: 0.4;
 		color: var(--text-primary-color);
 		cursor: not-allowed;
+		border-color: transparent;
 	}
 }
 
 .ButtonS {
 	padding: 0.5em 1em;
 	min-width: 10ch;
+	border: solid var(--info-color) 1px;
+	border-radius: var(--radius);
 	color: var(--info-color);
 	cursor: pointer;
 	transition-duration: 0.3s;
 	text-transform: uppercase;
 
 	&:hover:not(:disabled) {
-		color: var(--info-color);
-		border: solid var(--info-color) 1px;
-		border-radius: var(--radius);
+		background-color: var(--info-color);
+		color: var(--text-primary-color);
 	}
 
 	&:disabled {
-		opacity: 0.5;
+		opacity: 0.4;
 		color: var(--secondary-color);
 		cursor: not-allowed;
+		border-color: transparent;
 	}
 }

@@ -32,6 +32,22 @@
 		.card-imageContainer {
 			position: relative;
 			margin-bottom: 8px;
+			display: block;
+			color: inherit;
+
+			&:hover::after {
+				content: "";
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				background: linear-gradient(
+					to top,
+					#0000007a 1%,
+					transparent 45%
+				);
+			}
 		}
 
 		.card-image {
@@ -72,16 +88,40 @@
 			grid-gap: 14px;
 		}
 
-		.card-channelImage {
+		.card-channelImageLink {
 			display: block;
 			width: 40px;
 			height: 40px;
 			border-radius: 50%;
+			overflow: hidden;
+		}
+
+		.card-channelNameContainer {
+			display: flex;
+			align-items: center;
 		}
 
 		.card-channelName {
-			display: flex;
-			align-items: center;
+			display: inline-block;
+			display: -webkit-box;
+			-webkit-line-clamp: 1;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+			flex-shrink: 1;
+		}
+
+		.card-verifiedIcon {
+			color: var(--secondary-color);
+			vertical-align: middle;
+			display: inline-block;
+			padding: 0 5px;
+			height: 1em;
+			flex-shrink: 0;
+			width: 2em;
+
+			&[is-verified="false"] {
+				display: none;
+			}
 		}
 	}
 

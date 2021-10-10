@@ -57,6 +57,7 @@ export class Card {
 
 	public static getCardHtmlDone(video: MappingVideo): DocumentFragment {
 		const template = getHtmlTemplate("template#card-done");
+		template.querySelector(".card-imageContainer").setAttribute('href', video.videoUrl);
 		template.querySelector(".card-image").setAttribute("src", video.thumbnailUrl);
 		const duration = formatTime(parseInt(video.lengthSeconds));
 		template.querySelector(".card-imageTimer").textContent = duration;
@@ -64,8 +65,10 @@ export class Card {
 		const viewCounter = parseInt(video.viewCounter).toLocaleString();
 		template.querySelector(".card-viewCounter").textContent = viewCounter;
 		template.querySelector(".card-uploadDate").textContent = video.uploadDate.toLocaleDateString();
+		template.querySelector(".card-channelImageLink").setAttribute("href", video.author.channelUrl);
 		template.querySelector(".card-channelImage").setAttribute("src", video.author.thumbnailUrl);
 		template.querySelector(".card-channelName").textContent = video.author.name;
+		template.querySelector(".card-verifiedIcon").setAttribute("is-verified", video.author.verified ? 'true' : 'false');
 
 		return template;
 	}
