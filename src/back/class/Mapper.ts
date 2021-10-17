@@ -165,6 +165,9 @@ export class Mapper {
 			return [...acc, videoId];
 		}, []);
 
+		const authorThumbnailUrl = r.videoDetails.author?.thumbnails?.[r.videoDetails.author?.thumbnails.length - 1].url ?? '';
+		const thumbnailUrl = r.videoDetails.thumbnails?.[r.videoDetails.thumbnails.length - 1].url ?? '';
+
 		const video: MappingVideo = {
 			state: MappingVideoState.DONE,
 			id: r.videoDetails.videoId,
@@ -174,14 +177,14 @@ export class Mapper {
 				name: r.videoDetails.author.name,
 				verified: r.videoDetails.author.verified,
 				channelUrl: r.videoDetails.author.channel_url,
-				thumbnailUrl: r.videoDetails.author?.thumbnails?.[0]?.url ?? '', // TODO: Improve thumbnails picking method
+				thumbnailUrl: authorThumbnailUrl
 			},
 			title: r.videoDetails.title,
 			uploadDate: new Date(r.videoDetails.uploadDate),
 			videoUrl: r.videoDetails.video_url,
 			viewCounter: r.videoDetails.viewCount,
 			lengthSeconds: r.videoDetails.lengthSeconds,
-			thumbnailUrl: r.videoDetails.thumbnails?.[0].url ?? '', // TODO: Improve thumbnails picking method
+			thumbnailUrl,
 		};
 
 		Mapper.mapping.data.set(id, video);
