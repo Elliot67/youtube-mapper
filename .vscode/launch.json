@@ -12,7 +12,10 @@
 				"--inspect",
 				"--trace-warnings"
 			],
-			"outputCapture": "std"
+			"outputCapture": "std",
+			"env": {
+				"NODE_ENV": "dev"
+			}
 		}
 	]
 }
