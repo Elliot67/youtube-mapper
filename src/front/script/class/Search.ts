@@ -1,6 +1,7 @@
 import { Logs } from "./Logs";
 import { generateUniqueId, isDef } from "../utils/general";
 import { Errors } from "./Errors";
+import { Mapping } from "../../../sharedTypes";
 
 export class Search {
 
@@ -54,5 +55,11 @@ export class Search {
 		this.$button.disabled = false;
 		this.$buttonStop.disabled = true;
 		this.$input.disabled = false;
+	}
+
+	public static globalUpdate(data: Mapping) {
+		if (data.isFinished) {
+			this.unblockSearch();
+		}
 	}
 }

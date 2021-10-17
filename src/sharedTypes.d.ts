@@ -6,6 +6,7 @@ export interface Mapping {
 	startDate: Date | null;
 	lastUpdateDate: Date | null;
 	errors: MappingError[];
+	isFinished: boolean;
 }
 
 export interface MappingError {

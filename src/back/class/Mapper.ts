@@ -40,6 +40,7 @@ export class Mapper {
 					debug: error,
 					errorCode: 100,
 				});
+				Mapper.mapping.isFinished = true;
 				Mapper.responseEvent.reply('map-video', Mapper.mapping);
 				return;
 			}
@@ -103,9 +104,14 @@ export class Mapper {
 	}
 
 	public static sendUpdate(): void {
-		if (isDef(Mapper.responseEvent)) {
-			Mapper.responseEvent.reply('map-video', Mapper.mapping);
+		if (!isDef(Mapper.responseEvent)) {
+			return;
 		}
+
+		if (!Mapper.mapping.isFinished) {
+			Mapper.mapping.isFinished = ![...Mapper.mapping.data].some(([k, v]) => v.state !== MappingVideoState.DONE);
+		}
+		Mapper.responseEvent.reply('map-video', Mapper.mapping);
 	}
 
 	public static async findLinkedIdsRecursively(searchId: string, videoId: string) {
@@ -221,6 +227,7 @@ export class Mapper {
 			startDate: null,
 			lastUpdateDate: null,
 			errors: [],
+			isFinished: false,
 		};
 	}
 

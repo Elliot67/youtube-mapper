@@ -14,6 +14,11 @@ Card.init();
 Errors.init();
 
 const throttleMappingRender = _throttle((data: Mapping) => {
+	if (data.errors.length > 0) {
+		Errors.showErrors(data.errors);
+	}
+
+	Search.globalUpdate(data);
 	Graph.mapIt(data);
 	Card.globalUpdate(data);
 }, 1500);
@@ -25,10 +30,6 @@ window._app.on('map-video', (e, data: Mapping) => {
 		log.log(['The response was not from the last search']);
 		window._app.notListening(data.searchId);
 		return;
-	}
-
-	if (data.errors.length > 0) {
-		Errors.showErrors(data.errors);
 	}
 
 	throttleMappingRender(data);
