@@ -4,6 +4,7 @@ import { Graph } from "./class/Graph"
 import { Search } from "./class/Search";
 import { Logs } from "./class/Logs";
 import { Errors } from "./class/Errors";
+import { throttle as _throttle } from "lodash";
 
 const log = new Logs('script', true);
 
@@ -11,6 +12,11 @@ Graph.init();
 Search.init();
 Card.init();
 Errors.init();
+
+const throttleMappingRender = _throttle((data: Mapping) => {
+	Graph.mapIt(data);
+	Card.globalUpdate(data);
+}, 1500);
 
 window._app.on('map-video', (e, data: Mapping) => {
 	log.log(['Got response from map-video', data]);
@@ -25,6 +31,5 @@ window._app.on('map-video', (e, data: Mapping) => {
 		Errors.showErrors(data.errors);
 	}
 
-	Graph.mapIt(data);
-	Card.globalUpdate(data);
+	throttleMappingRender(data);
 });
