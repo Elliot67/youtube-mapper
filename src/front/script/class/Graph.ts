@@ -90,7 +90,7 @@ export class Graph {
 
 	public static setSvgEvents() {
 		this.svg.on('click', (event: MouseEvent) => {
-			this.clearSelectedNode();
+			this.clearSelectedNodeAndGraphStyle();
 			Card.updateCard();
 		});
 	}
@@ -103,19 +103,19 @@ export class Graph {
 	}
 
 	public static selectNode(nodeName) {
-		this.clearSelectedNode();
+		this.clearSelectedNodeAndGraphStyle();
 		this.selectedNode = nodeName;
 		Card.updateCard(this.mapping.data.get(nodeName));
 		this.highlightPossiblePaths(nodeName);
 		this.highlightShortestPath(nodeName);
-		this.highLightNode(nodeName);
+		this.highlightNode(nodeName);
 	}
 
 	public static highlightPossiblePaths(nodeName): void {
 		this.nodePredecessors.push(nodeName);
 		this.updateNodePredecessorsRecursively(nodeName);
-		const nodes = d3.selectAll(".node").filter((datum) => this.nodePredecessors.includes(datum));
-		nodes.style('stroke', 'var(--secondary-color)');
+		const $nodes = d3.selectAll(".node").filter((datum) => this.nodePredecessors.includes(datum));
+		$nodes.style('stroke', 'var(--secondary-color)');
 		this.nodePredecessors = [];
 	}
 
@@ -123,7 +123,7 @@ export class Graph {
 		const mainName = this.mapping.mainId;
 		const nodesName = [mainName, nodeName];
 		const paths = graphlib.alg.dijkstra(this.g, mainName);
-		if (!isDef(paths[nodeName]) ||paths[nodeName].distance === Infinity) {
+		if (!isDef(paths[nodeName]) || paths[nodeName].distance === Infinity) {
 			return;
 		}
 
@@ -131,15 +131,27 @@ export class Graph {
 			nodeName = paths[nodeName].predecessor;
 			nodesName.push(nodeName);
 		}
-		const nodes = d3.selectAll(".node").filter((datum) => nodesName.includes(datum));
-		nodes.style('stroke', 'var(--primary-color)');
-		nodes.style('--stroke-width', '3px');
+		const $nodes = d3.selectAll(".node").filter((datum) => nodesName.includes(datum));
+		$nodes.style('stroke', 'var(--primary-color)').style('stroke-width', '3px');
+
+		const selectedLinksLine: d3.Selection<d3.BaseType, unknown, null, undefined>[] = [];
+		const selectedLinksArrow: d3.Selection<d3.BaseType, unknown, null, undefined>[] = [];
+		const $links = d3.selectAll('g.edgePath');
+		$links.each(function (data) {
+			const { v: parentId, w: childId } = data as { v: string, w: string };
+			if (nodesName.includes(parentId) && nodesName.includes(childId)) {
+				const $selection = d3.select(this);
+				selectedLinksLine.push($selection.select('.path'));
+				selectedLinksArrow.push($selection.select('defs > marker > path'));
+			}
+		});
+		selectedLinksLine.forEach($el => $el.style('stroke', 'var(--primary-color)'));
+		selectedLinksArrow.forEach($el => $el.style('stroke', 'var(--primary-color)').style('fill', 'var(--primary-color)'));
 	}
 
-	public static highLightNode(nodeName) {
-		const node = d3.selectAll(".node").filter((datum) => nodeName === datum);
-		node.style('stroke', 'var(--primary-color)');
-		node.style('--stroke-width', '5px');
+	public static highlightNode(nodeName) {
+		const $node = d3.selectAll(".node").filter((datum) => nodeName === datum);
+		$node.style('stroke', 'var(--primary-color)').style('--stroke-width', '5px');
 	}
 
 	public static updateNodePredecessorsRecursively(nodeName) {
@@ -152,9 +164,13 @@ export class Graph {
 		})
 	}
 
-	public static clearSelectedNode() {
+	public static clearSelectedNodeAndGraphStyle() {
 		this.selectedNode = null;
 		d3.selectAll(".node").style('stroke', 'none').style('--stroke-width', '1.5px');
+
+		const $links = d3.selectAll('g.edgePath')
+		$links.select('.path').style('stroke', 'var(--border-color)');
+		$links.select('defs > marker > path').style('stroke', 'var(--border-color)').style('fill', 'var(--border-color)');
 	}
 
 	public static center() {
