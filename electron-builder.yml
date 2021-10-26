@@ -1,0 +1,21 @@
+appId: youtube-mapper
+productName: Youtube Mapper
+mac:
+  icon: build/icons/mac/icon.icns
+  target:
+    - dmg
+  category: public.app-category.video
+win:
+  icon: build/icons/win/icon.ico
+  target:
+    - nsis
+    - portable
+nsis:
+  deleteAppDataOnUninstall: true
+  artifactName: ${productName} Setup ${version}.${ext}
+linux:
+  category: Video
+  target:
+    - deb
+  icon: build/icons/png
+  maintainer: Elliot Lintz

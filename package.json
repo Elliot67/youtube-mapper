@@ -1,7 +1,7 @@
 {
 	"name": "youtube-mapper",
 	"description": "Create a graph from youtube videos by following end screen links. Helpful to easily visualize interactive video paths.",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"author": "Elliot Lintz",
 	"license": "MIT",
 	"scripts": {
@@ -37,33 +37,5 @@
 	},
 	"browserslist": [
 		"last 1 Chrome version"
-	],
-	"build": {
-		"appId": "youtube-mapper",
-		"productName": "Youtube Mapper",
-		"mac": {
-			"icon": "build/icons/mac/icon.icns",
-			"target": [
-				"dmg"
-			],
-			"category": "public.app-category.video"
-		},
-		"win": {
-			"icon": "build/icons/win/icon.ico",
-			"target": [
-				"nsis"
-			]
-		},
-		"nsis": {
-			"deleteAppDataOnUninstall": true
-		},
-		"linux": {
-			"category": "Video",
-			"target": [
-				"deb"
-			],
-			"icon": "build/icons/png",
-			"maintainer": "Elliot Lintz"
-		}
-	}
+	]
 }
