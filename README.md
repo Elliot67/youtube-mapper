@@ -1,4 +1,4 @@
-<p align="center"><img width="150" src="./.repo/youtube-mapper-icon.png" alt="Vue logo"></p>
+<p align="center"><img width="150" src="./.repo/youtube-mapper-icon.png" alt="Youtube Mapper logo"></p>
 
 <h1 align="center">Youtube mapper</h1>
 <p align="center">Create a graph from youtube videos by following end screen links. Helpful to easily visualize interactive video paths.</p>
