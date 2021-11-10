@@ -3,9 +3,19 @@
 <h1 align="center">Youtube mapper</h1>
 <p align="center">Create a graph from youtube videos by following end screen links. Helpful to easily visualize interactive video paths.</p>
 
-## Download
+<p align="center"><img width="100%" src="./.repo/youtube-mapper-preview.gif" alt="Youtube Mapper preview"></p>
+
+## Installation
 
 Available for Windows, MacOS and Linux in the [release panel](https://github.com/Elliot67/youtube-mapper/releases).
+
+### MacOS
+
+On the first start, you will need to authorize the application to run :
+
+```
+Finder > Applications > right click on youtube mapper > Open
+```
 
 ## Development
 
@@ -26,3 +36,9 @@ Once the project is installed with `yarn install`, you have to execute :
 - `yarn run b-start` to launch the electron application
 
 You can also launch the electron application with the build-in VSCode debugger with <kbd>F5</kbd>.
+
+### Build
+
+- `yarn run f-build` to build the front
+- `yarn run b-build` to build the back
+- `yarn run build-w` to build the application with `w`/`l`/`m` for windows/linux/macOS
